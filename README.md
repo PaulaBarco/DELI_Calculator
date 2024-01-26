@@ -1,2 +1,3 @@
 # Thesis Spring 2024
-This is the summarize of the thesis description
+This repository contains the work for the thesis in Spring 2024 regarding the Recipe calculator.
+
