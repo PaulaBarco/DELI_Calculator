@@ -22,3 +22,8 @@ After the environment is created, it can be activated by running:
 ```bash
 conda activate foodcalc
 ```
+
+## Repository structure
+
+./src: Contains all the code for the project
+./data: Contains all the data used in the project
