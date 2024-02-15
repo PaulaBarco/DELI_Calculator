@@ -1,11 +1,23 @@
+""" Function to read datasets
+
+Author: Paula Barco
+
+Date: 2021-07-01
+
+"""
+
+
+
 #%%
 import pandas as pd
 import os
 from pathlib import Path
 
+from constants import data_path
+
 #%%
-directory_path = Path("..")
-os.getcwd()
+# directory_path = Path("..")
+# os.getcwd()
 
 # %%
 # We Create a function to obatin read datasets
@@ -17,10 +29,15 @@ os.getcwd()
 def dataset_reader(name, data_folder, type):
     if type is True:
         datasets_path = (
-            directory_path
-            / "data"
+            data_path
             / data_folder
             / name)
+
+        # datasets_path = (
+        #     directory_path
+        #     / "data"
+        #     / data_folder
+        #     / name)
         a = datasets_path
         return(pd.read_excel(a, sheet_name='Results - Global Totals'))
     else:
