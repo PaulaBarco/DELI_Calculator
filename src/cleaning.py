@@ -17,10 +17,12 @@ save_path = (
 
 #%%
 #df1 = pd.read_excel('aaq0216_datas2.xls', sheet_name='Results - Global Totals')
-df1 = pfuncs.dataset_reader('aaq0216_datas2.xls', 'raw',
+df1 = pfuncs.dataset_reader('aaq0216_datas2.xls', 'raw', 
                              True)
 
 print(df1)
+
+
 # %%
 #Substracting the data needed
 df2 = df1.iloc[1:56, 0:16]
