@@ -32,20 +32,13 @@ def dataset_reader(name, data_folder, type):
             data_path
             / data_folder
             / name)
-
-        # datasets_path = (
-        #     directory_path
-        #     / "data"
-        #     / data_folder
-        #     / name)
         a = datasets_path
-        return(pd.read_excel(a, sheet_name='Results - Global Totals'))
+        return(pd.read_excel(a, sheet_name= 'Results - Global Totals'))
     else:
         datasets_path = (
-            directory_path
-            / "data"
+            data_path
             / data_folder
             / name)
         a = datasets_path
-        return(pd.read_excel(a, sheet_name='Results - Global Totals'))
+        return(pd.read_excel(a))
 # %%
