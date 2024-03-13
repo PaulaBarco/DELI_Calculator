@@ -11,13 +11,13 @@ import pandas as pd
 import os
 from pathlib import Path
 import ProjectFunctions as pfuncs
+from constants import data_path
 
 #%%
-os.getcwd()
-directory_path = Path("..")
+#os.getcwd()
+#directory_path = Path("..")
 save_path = (
-    directory_path
-    / "data"
+    data_path
     / "interim"
 )
 

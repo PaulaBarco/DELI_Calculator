@@ -13,41 +13,8 @@ import pandas as pd
 import os
 from pathlib import Path
 import ProjectFunctions as pfuncs
+from constants import data_path
 
-#%%
-os.getcwd()
-directory_path = Path("..")
-save_path = (
-    directory_path
-    / "data"
-    / "interim"
-)
-
-#%%
-#Read the Clean Poore & Nemecek database
-Poore_nemecek = pfuncs.dataset_reader('Clean_Poore&Nemecek.xls', 'interim', 
-                             False)
-
-#%%
-#Read the food item detail for each food group defined in Poore & Nemecek
-fooditem_foodgroup = pfuncs.dataset_reader('ingredient_foogroup.xlsx', 'interim', False)
-
-# %%
-#Merge the two previous databases to obtain the impacts per food item
-fooditem_PooreNemecek = pd.merge(Poore_nemecek, fooditem_foodgroup, on=['Food group'])
-
-print(fooditem_PooreNemecek)
-
-# %%
-#Move the Ingredient column to the beginning of the database
-col_ingredients = fooditem_PooreNemecek.pop('Ingredient')
-fooditem_PooreNemecek.insert(0, 'Ingredient', col_ingredients)
-
-print(fooditem_PooreNemecek)
-
-#%%
-# Save the database created in the interim folder
-fooditem_PooreNemecek.to_excel(save_path / 'Fooditem_PooreNemecek.xlsx', index=False)
 
 # %%
 ##? RECIPE
@@ -84,6 +51,8 @@ print(abstracted_Lomo_saltado)
 
 
 #%%
+#! Convert_all_to_grams
+
 # Selected the rows that has different values than grams, so the conversion can be performed
 non_grams = abstracted_Lomo_saltado[abstracted_Lomo_saltado['Unit'] != 'grams']
 
@@ -102,7 +71,6 @@ for index, row in non_grams.iterrows():
         print(f"Conversion factor for {ingredient} in {unit}: {conversion_factor[0]} grams")
     else:
         print(f"No conversion factor found for {ingredient} in {unit}")
-
 
 
 #%%
@@ -157,7 +125,13 @@ print(recipe_lomo_saltado)
 
 
 #%%
+#! Impacts_calculation
+
 #Substract the section of the Poore&Nemecek database needed for this recipe
+#Read the Clean Poore & Nemecek database
+fooditem_PooreNemecek = pfuncs.dataset_reader('Fooditem_PooreNemecek.xlsx', 'interim', 
+                             False)
+
 Recipe_impacts_df = fooditem_PooreNemecek.loc[fooditem_PooreNemecek['Ingredient'].isin(['Olive oil','Onions', 'Tomatoes','Potatoes', 'Rice','Beef'])]
 
 print(Recipe_impacts_df)
@@ -173,12 +147,14 @@ print(Recipe_impacts_df2)
 #from the impacts dataframe with the corresponding value from the recipe
 
 Scalar = recipe_lomo_saltado.values
+Scalar_size = Scalar.size
 
 print(Scalar)
+print(Scalar_size)
 
 #%%
 #Multiplication
-lomo_saltado_impacts = Recipe_impacts_df2.loc[:5].mul(Scalar, axis= 0)
+lomo_saltado_impacts = Recipe_impacts_df2.loc[:Scalar_size-1].mul(Scalar, axis= 0)
 
 print(lomo_saltado_impacts)
 
