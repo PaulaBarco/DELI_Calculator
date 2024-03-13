@@ -1,4 +1,10 @@
+""" Cleaning procedure for the Poore & Nemecek database
 
+Author: Paula Barco
+
+Date: 2024-02-06
+
+"""
 
 #%%
 import pandas as pd
