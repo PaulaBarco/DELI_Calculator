@@ -13,7 +13,6 @@ import pandas as pd
 import os
 from pathlib import Path
 import ProjectFunctions as pfuncs
-import numpy as np
 
 #%%
 os.getcwd()
