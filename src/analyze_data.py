@@ -150,11 +150,10 @@ Scalar = recipe_lomo_saltado.values
 Scalar_size = Scalar.size
 
 print(Scalar)
-print(Scalar_size)
 
 #%%
 #Multiplication
-lomo_saltado_impacts = Recipe_impacts_df2.loc[:Scalar_size-1].mul(Scalar, axis= 0)
+lomo_saltado_impacts = Recipe_impacts_df2.mul(Scalar, axis= 0)
 
 print(lomo_saltado_impacts)
 
