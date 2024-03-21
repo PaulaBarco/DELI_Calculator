@@ -6,7 +6,7 @@ Date: 2024-02-06
 
 """
 
-
+#%%
 import pandas as pd
 import os
 from pathlib import Path
@@ -46,3 +46,5 @@ print(fooditem_PooreNemecek)
 #%%
 # Save the database created in the interim folder
 fooditem_PooreNemecek.to_excel(save_path / 'Fooditem_PooreNemecek.xlsx', index=False)
+
+# %%

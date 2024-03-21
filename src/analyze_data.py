@@ -72,7 +72,6 @@ for index, row in non_grams.iterrows():
     else:
         print(f"No conversion factor found for {ingredient} in {unit}")
 
-
 #%%
 #Then we merge the two dataframes so we can later multiply the amount needed by the 
 # conversion factor
@@ -97,22 +96,22 @@ print(ingredients_lomo_saltado)
 #%%
 #we now merge the correct amounts for the ingredients with units different than grams and the 
 # ingredients with grams
-recipe_lomo_saltado = pd.merge(ingredients_lomo_saltado, abstracted_Lomo_saltado, on=['Ingredient'], how='right')
+recipe_lomo_saltado_wnan = pd.merge(ingredients_lomo_saltado, abstracted_Lomo_saltado, on=['Ingredient'], how='right')
 
-print(recipe_lomo_saltado)
+print(recipe_lomo_saltado_wnan)
 
 
 #%%
 # More cleaning, first, identify rows where 'Unit' is 'grams' and 'Grams' is NaN, and then
 # replace the NaN values in the 'Grams' column with the corresponding 'Amount_x' values
-m = (recipe_lomo_saltado['Unit'] == 'grams') & (recipe_lomo_saltado['Grams_x'].isna())
-recipe_lomo_saltado.loc[m, 'Grams_x'] = recipe_lomo_saltado.loc[m, 'Amount']
+m = (recipe_lomo_saltado_wnan['Unit'] == 'grams') & (recipe_lomo_saltado_wnan['Grams_x'].isna())
+recipe_lomo_saltado_wnan.loc[m, 'Grams_x'] = recipe_lomo_saltado_wnan.loc[m, 'Amount']
 
-print(recipe_lomo_saltado)
+print(recipe_lomo_saltado_wnan)
 
 #%%
 #Cleaning dropping specific columns and rows with NaN
-recipe_lomo_saltado = recipe_lomo_saltado.drop(columns = ['Ingredient', 'Amount', 'Unit'])
+recipe_lomo_saltado = recipe_lomo_saltado_wnan.drop(columns = ['Ingredient', 'Amount', 'Unit'])
 recipe_lomo_saltado = recipe_lomo_saltado.dropna()
 print(recipe_lomo_saltado)
 
@@ -132,7 +131,11 @@ print(recipe_lomo_saltado)
 fooditem_PooreNemecek = pfuncs.dataset_reader('Fooditem_PooreNemecek.xlsx', 'interim', 
                              False)
 
-Recipe_impacts_df = fooditem_PooreNemecek.loc[fooditem_PooreNemecek['Ingredient'].isin(['Olive oil','Onions', 'Tomatoes','Potatoes', 'Rice','Beef'])]
+#%%
+
+#Recipe_impacts_df = fooditem_PooreNemecek.loc[fooditem_PooreNemecek['Ingredient'].isin(['Olive oil','Onions', 'Tomatoes','Potatoes', 'Rice','Beef'])]
+Recipe_impacts_df = fooditem_PooreNemecek.loc[fooditem_PooreNemecek['Ingredient'].isin(recipe_lomo_saltado_wnan['Ingredient'])]
+
 
 print(Recipe_impacts_df)
 
@@ -168,4 +171,7 @@ print(lomo_saltado_impacts)
 lomo_saltado_impacts_total = lomo_saltado_impacts.sum()
 
 print(lomo_saltado_impacts_total)
-# %%
+
+
+
+
