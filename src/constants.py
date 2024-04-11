@@ -8,5 +8,7 @@ data_path = Path("../data")
 
 recipe_directory = Path("../data/recipes")
 
+save_path_impacts = Path("../data/impacts")
+
 
 # %%
