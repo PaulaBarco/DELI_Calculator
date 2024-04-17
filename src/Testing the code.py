@@ -86,7 +86,7 @@ recipe_wnan.loc[m, 'Grams_x'] = recipe_wnan.loc[m, 'Amount']
 
 
         #Cleaning dropping specific columns and rows with NaN
-recipe_final = recipe_wnan.drop(columns = ['Ingredient', 'Amount', 'Unit'])
+recipe_final = recipe_wnan.drop(columns = ['Amount', 'Unit'])
 recipe_final = recipe_final.dropna()
 
 print(recipe_final)
@@ -94,7 +94,7 @@ print(recipe_final)
 #%%
 
 
-        #Cleaning, rename the column 'Grams'
+#Cleaning, rename the column 'Grams'
 recipe_final = (
     recipe_final.rename(columns={'Grams_x':'Grams'}))
 
@@ -105,50 +105,87 @@ print(recipe_final)
         #! Impacts_calculation
 
 
-        #Recipe_impacts_df = fooditem_PooreNemecek.loc[fooditem_PooreNemecek['Ingredient'].isin(['Olive oil','Onions', 'Tomatoes','Potatoes', 'Rice','Beef'])]
-ingredients = abstracted_recipe['Ingredient'].tolist()
-
-print(ingredients)
-
-#%%
-ingredients_impacts = fooditem_PooreNemecek[fooditem_PooreNemecek['Ingredient'].isin(ingredients)]
-
+ingredients_impacts = pd.merge(recipe_final, fooditem_PooreNemecek, on= 'Ingredient', how= 'left')
 
 print(ingredients_impacts)
 
 #%%
-#Recipe_impacts_df = fooditem_PooreNemecek.loc[fooditem_PooreNemecek['Ingredient'].isin(recipe_wnan['Ingredient'])]
-
 
         #Substract only the columns related to impacts
-Recipe_impacts_df2 = ingredients_impacts.loc[:,'Land Use (m2) Arable':'Str-Wt WU (L eq)'].reset_index(drop=True)
+Recipe_impacts = ingredients_impacts.loc[:,'Ingredient':'Str-Wt WU (L eq)'].reset_index(drop=True)
 
-print(Recipe_impacts_df2)
+print(Recipe_impacts)
         #We create an array with the values from the recipe so we can multiply every row
         #from the impacts dataframe with the corresponding value from the recipe
 
 #%%
-Scalar = recipe_final.values
-Scalar_size = Scalar.size
 
-print(Scalar)
+Recipe_impacts['Land Use (m2) Arable_x'] = Recipe_impacts['Land Use (m2) Arable']*Recipe_impacts['Grams']
+Recipe_impacts['Land Use (m2) Fallow_x'] = Recipe_impacts['Land Use (m2) Fallow']*Recipe_impacts['Grams']
+Recipe_impacts['Land Use (m2) Perm Past_x'] = Recipe_impacts['Land Use (m2) Perm Past']*Recipe_impacts['Grams']
+Recipe_impacts['GHG (kg CO2eq, IPCC 2013) LUC_x'] = Recipe_impacts['GHG (kg CO2eq, IPCC 2013) LUC']*Recipe_impacts['Grams']
+Recipe_impacts['GHG (kg CO2eq, IPCC 2013) Feed_x'] = Recipe_impacts['GHG (kg CO2eq, IPCC 2013) Feed']*Recipe_impacts['Grams']
+Recipe_impacts['GHG (kg CO2eq, IPCC 2013) Farm_x'] = Recipe_impacts['GHG (kg CO2eq, IPCC 2013) Farm']*Recipe_impacts['Grams']
+Recipe_impacts['GHG (kg CO2eq, IPCC 2013) Processing_x'] = Recipe_impacts['GHG (kg CO2eq, IPCC 2013) Processing']*Recipe_impacts['Grams']
+Recipe_impacts['GHG (kg CO2eq, IPCC 2013) Transport_x'] = Recipe_impacts['GHG (kg CO2eq, IPCC 2013) Transport']*Recipe_impacts['Grams']
+Recipe_impacts['GHG (kg CO2eq, IPCC 2013) Packging_x'] = Recipe_impacts['GHG (kg CO2eq, IPCC 2013) Packging']*Recipe_impacts['Grams']
+Recipe_impacts['GHG (kg CO2eq, IPCC 2013) Retail_x'] = Recipe_impacts['GHG (kg CO2eq, IPCC 2013) Retail']*Recipe_impacts['Grams']
+Recipe_impacts['Acid.(kg SO2eq)_x'] = Recipe_impacts['Acid.(kg SO2eq)']*Recipe_impacts['Grams']
+Recipe_impacts['Eutr. (kg PO43-eq)_x'] = Recipe_impacts['Eutr. (kg PO43-eq)']*Recipe_impacts['Grams']
+Recipe_impacts['Freshwater (L)_x'] = Recipe_impacts['Freshwater (L)']*Recipe_impacts['Grams']
+Recipe_impacts['Str-Wt WU (L eq)_x'] = Recipe_impacts['Str-Wt WU (L eq)']*Recipe_impacts['Grams']
+
+print(Recipe_impacts)
+
+Recipe_impacts = pd.DataFrame(Recipe_impacts)
 
 #%%
-        #Multiplication
-recipe_impacts_mult = Recipe_impacts_df2.mul(Scalar, axis= 0)
+numeric_columns = Recipe_impacts.select_dtypes(include=[pd.np.number]).columns
 
-
-print(recipe_impacts_mult)
-#%%
-
-        ### If 1000 gr has X impact, then new amount multiplied by the impact and 
-        ## divided by 1000 gr
-recipe_impacts_final = recipe_impacts_mult / 1000
-
-print(recipe_impacts_final)
+print(numeric_columns)
 
 #%%
-        #We sum the columns to get a total value for each impact
-recipe_impacts_final_total = recipe_impacts_final.sum()
+Recipe_impacts[numeric_columns] = Recipe_impacts[numeric_columns].div(1000)
 
-print(recipe_impacts_final_total)
+print(Recipe_impacts)
+
+# %%
+#Change of names
+
+Recipe_impacts = Recipe_impacts.drop(columns = ['Grams', 'Food and Waste', 'Ingredient', 'Food group',
+                                                'Land Use (m2) Arable', 'Land Use (m2) Fallow', 
+                                                'Land Use (m2) Perm Past', 'GHG (kg CO2eq, IPCC 2013) LUC', 
+                                                'GHG (kg CO2eq, IPCC 2013) Feed',
+                                                'GHG (kg CO2eq, IPCC 2013) Farm',
+                                                'GHG (kg CO2eq, IPCC 2013) Processing',
+                                                'GHG (kg CO2eq, IPCC 2013) Transport',
+                                                'GHG (kg CO2eq, IPCC 2013) Packging',
+                                                'GHG (kg CO2eq, IPCC 2013) Retail',
+                                                'Acid.(kg SO2eq)',
+                                                'Eutr. (kg PO43-eq)',
+                                                'Freshwater (L)',
+                                                'Str-Wt WU (L eq)'])
+
+Recipe_impacts = (
+    Recipe_impacts.rename(columns={'Land Use (m2) Arable_x':'Land Use (m2) Arable',
+                                   'Land Use (m2) Fallow_x':'Land Use (m2) Fallow',
+                                   'Land Use (m2) Perm Past_x':'GHG (kg CO2eq, IPCC 2013) LUC',
+                                   'GHG (kg CO2eq, IPCC 2013) LUC_x':'GHG (kg CO2eq, IPCC 2013) LUC',
+                                   'GHG (kg CO2eq, IPCC 2013) Feed_x':'GHG (kg CO2eq, IPCC 2013) Feed',
+                                   'GHG (kg CO2eq, IPCC 2013) Farm_x':'GHG (kg CO2eq, IPCC 2013) Farm',
+                                   'GHG (kg CO2eq, IPCC 2013) Processing_x':'GHG (kg CO2eq, IPCC 2013) Processing',
+                                   'GHG (kg CO2eq, IPCC 2013) Transport_x':'GHG (kg CO2eq, IPCC 2013) Transport',
+                                   'GHG (kg CO2eq, IPCC 2013) Packging_x':'GHG (kg CO2eq, IPCC 2013) Packging',
+                                   'GHG (kg CO2eq, IPCC 2013) Retail_x':'GHG (kg CO2eq, IPCC 2013) Retail',
+                                   'Acid.(kg SO2eq)_x':'Acid.(kg SO2eq)',
+                                   'Eutr. (kg PO43-eq)_x':'Eutr. (kg PO43-eq)',
+                                   'Freshwater (L)_x':'Freshwater (L)',
+                                   'Str-Wt WU (L eq)_x':'Str-Wt WU (L eq)'}))
+
+print(Recipe_impacts)
+
+# %%
+recipe_impacts_total = Recipe_impacts.sum()
+
+print(recipe_impacts_total)
+# %%
