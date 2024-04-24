@@ -17,7 +17,6 @@ from constants import data_path
 from constants import recipe_directory
 from constants import save_path_impacts
 
-
 #%%
 
 #Read the Clean Poore & Nemecek database
@@ -30,7 +29,9 @@ Conversion_factors = pfuncs.dataset_reader('Conversion_factors.xlsx', 'interim',
 
 #%%
 # Counter to keep track of the file suffix
-file_suffix = 1
+file_suffix_recipe = 1
+
+file_suffix_ingredient = 1
 
 #%%
 # Loop through each Excel file in the folder Recipes
@@ -144,6 +145,7 @@ for file_name in os.listdir(recipe_directory):
         #Turning the matrix into a DataFrame
         Recipe_impacts = pd.DataFrame(Recipe_impacts)
 
+
         #Selecting only the columns that has numeric values
         numeric_columns = Recipe_impacts.select_dtypes(include=[pd.np.number]).columns
 
@@ -154,7 +156,25 @@ for file_name in os.listdir(recipe_directory):
 
         print(Recipe_impacts)
 
-        #Dropping the original columns
+        #Dropping the original columns - whatever has _ing in the name is because is done for the 
+        # ingredient_impacts files
+
+        Recipe_impacts_ing = Recipe_impacts
+
+        Recipe_impacts_ing = Recipe_impacts.drop(columns = ['Grams', 'Food and Waste', 'Food group',
+                                                        'Land Use (m2) Arable', 'Land Use (m2) Fallow', 
+                                                        'Land Use (m2) Perm Past', 'GHG (kg CO2eq, IPCC 2013) LUC', 
+                                                        'GHG (kg CO2eq, IPCC 2013) Feed',
+                                                        'GHG (kg CO2eq, IPCC 2013) Farm',
+                                                        'GHG (kg CO2eq, IPCC 2013) Processing',
+                                                        'GHG (kg CO2eq, IPCC 2013) Transport',
+                                                        'GHG (kg CO2eq, IPCC 2013) Packging',
+                                                        'GHG (kg CO2eq, IPCC 2013) Retail',
+                                                        'Acid.(kg SO2eq)',
+                                                        'Eutr. (kg PO43-eq)',
+                                                        'Freshwater (L)',
+                                                        'Str-Wt WU (L eq)'])
+
 
         Recipe_impacts = Recipe_impacts.drop(columns = ['Grams', 'Food and Waste', 'Ingredient', 'Food group',
                                                         'Land Use (m2) Arable', 'Land Use (m2) Fallow', 
@@ -171,10 +191,27 @@ for file_name in os.listdir(recipe_directory):
                                                         'Str-Wt WU (L eq)'])
 
         #Change of names of the new columns
+        Recipe_impacts_ing = (
+            Recipe_impacts_ing.rename(columns={'Land Use (m2) Arable_x':'Land Use (m2) Arable',
+                                        'Land Use (m2) Fallow_x':'Land Use (m2) Fallow',
+                                        'Land Use (m2) Perm Past_x':'Land Use (m2) Perm Past',
+                                        'GHG (kg CO2eq, IPCC 2013) LUC_x':'GHG (kg CO2eq, IPCC 2013) LUC',
+                                        'GHG (kg CO2eq, IPCC 2013) Feed_x':'GHG (kg CO2eq, IPCC 2013) Feed',
+                                        'GHG (kg CO2eq, IPCC 2013) Farm_x':'GHG (kg CO2eq, IPCC 2013) Farm',
+                                        'GHG (kg CO2eq, IPCC 2013) Processing_x':'GHG (kg CO2eq, IPCC 2013) Processing',
+                                        'GHG (kg CO2eq, IPCC 2013) Transport_x':'GHG (kg CO2eq, IPCC 2013) Transport',
+                                        'GHG (kg CO2eq, IPCC 2013) Packging_x':'GHG (kg CO2eq, IPCC 2013) Packging',
+                                        'GHG (kg CO2eq, IPCC 2013) Retail_x':'GHG (kg CO2eq, IPCC 2013) Retail',
+                                        'Acid.(kg SO2eq)_x':'Acid.(kg SO2eq)',
+                                        'Eutr. (kg PO43-eq)_x':'Eutr. (kg PO43-eq)',
+                                        'Freshwater (L)_x':'Freshwater (L)',
+                                        'Str-Wt WU (L eq)_x':'Str-Wt WU (L eq)'}))
+        
+        
         Recipe_impacts = (
             Recipe_impacts.rename(columns={'Land Use (m2) Arable_x':'Land Use (m2) Arable',
                                         'Land Use (m2) Fallow_x':'Land Use (m2) Fallow',
-                                        'Land Use (m2) Perm Past_x':'GHG (kg CO2eq, IPCC 2013) LUC',
+                                        'Land Use (m2) Perm Past_x':'Land Use (m2) Perm Past',
                                         'GHG (kg CO2eq, IPCC 2013) LUC_x':'GHG (kg CO2eq, IPCC 2013) LUC',
                                         'GHG (kg CO2eq, IPCC 2013) Feed_x':'GHG (kg CO2eq, IPCC 2013) Feed',
                                         'GHG (kg CO2eq, IPCC 2013) Farm_x':'GHG (kg CO2eq, IPCC 2013) Farm',
@@ -189,18 +226,55 @@ for file_name in os.listdir(recipe_directory):
 
         print(Recipe_impacts)
 
+        # Add a 'Total' row
+        subtotal_row = {
+                'Ingredient': 'Total',
+                'Land Use (m2) Arable': Recipe_impacts_ing['Land Use (m2) Arable'].sum(),
+                'Land Use (m2) Fallow': Recipe_impacts_ing['Land Use (m2) Fallow'].sum(),
+                'Land Use (m2) Perm Past': Recipe_impacts_ing['Land Use (m2) Perm Past'].sum(),
+                'GHG (kg CO2eq, IPCC 2013) LUC': Recipe_impacts_ing['GHG (kg CO2eq, IPCC 2013) LUC'].sum(),
+                'GHG (kg CO2eq, IPCC 2013) Feed': Recipe_impacts_ing['GHG (kg CO2eq, IPCC 2013) Feed'].sum(),
+                'GHG (kg CO2eq, IPCC 2013) Farm': Recipe_impacts_ing['GHG (kg CO2eq, IPCC 2013) Farm'].sum(),
+                'GHG (kg CO2eq, IPCC 2013) Processing': Recipe_impacts_ing['GHG (kg CO2eq, IPCC 2013) Processing'].sum(),
+                'GHG (kg CO2eq, IPCC 2013) Transport': Recipe_impacts_ing['GHG (kg CO2eq, IPCC 2013) Transport'].sum(),
+                'GHG (kg CO2eq, IPCC 2013) Packging': Recipe_impacts_ing['GHG (kg CO2eq, IPCC 2013) Packging'].sum(),
+                'GHG (kg CO2eq, IPCC 2013) Retail': Recipe_impacts_ing['GHG (kg CO2eq, IPCC 2013) Retail'].sum(),
+                'Acid.(kg SO2eq)': Recipe_impacts_ing['Acid.(kg SO2eq)'].sum(),
+                'Eutr. (kg PO43-eq)': Recipe_impacts_ing['Eutr. (kg PO43-eq)'].sum(),
+                'Freshwater (L)': Recipe_impacts_ing['Freshwater (L)'].sum(),
+                'Str-Wt WU (L eq)': Recipe_impacts_ing['Str-Wt WU (L eq)'].sum()
+                }
+        
+        subtotal_df = pd.DataFrame(subtotal_row, index=[0])
+
+        # Concatenate the original DataFrame with the subtotal row
+        Recipe_impacts_ing = pd.concat([Recipe_impacts_ing, subtotal_df], ignore_index=True)
+
+        # Add a Recipe column with the Recipe identifier
+        Recipe_impacts_ing['Recipe'] = f'Recipe {file_suffix_recipe}'
+        
+        # Save the results per ingredient to an Excel file
+        Recipe_impacts_ing.to_excel(save_path_impacts / f'impacts_per_ingredient{file_suffix_ingredient}.xlsx', index=False)
+        
+
+        # Increment the file suffix for the next iteration
+        file_suffix_ingredient += 1
+
+    
+
+
         #Summing up the impacts per category
         recipe_impacts_total = Recipe_impacts.sum()
 
         print(recipe_impacts_total)
         
         # Save the results to an Excel file
-        recipe_impacts_total.to_excel(save_path_impacts / f'impacts_recipe_{file_suffix}.xlsx', index=False)
+        recipe_impacts_total.to_excel(save_path_impacts / f'Recipe {file_suffix_recipe}.xlsx', index=False)
         
         print(f"Environmental impacts saved to {save_path_impacts}")
 
         # Increment the file suffix for the next iteration
-        file_suffix += 1
+        file_suffix_recipe += 1
         
 
 
@@ -238,11 +312,13 @@ labels_df.to_excel(save_path_impacts / 'Impacts_labels.xlsx', index=False)
 
 #%%
 
-#List all the files that are in the Impact folder
-
-excel_files = [file for file in os.listdir(save_path_impacts) if file.endswith('.xlsx')]
+# List all the files that are in the Impact folder
+excel_files = [file for file in os.listdir(save_path_impacts) if file.startswith('Recipe') and file.endswith('.xlsx')]
 
 print(excel_files)
+# Add the "labels.xlsx" file if it exists
+if 'Impacts_labels.xlsx' in os.listdir(save_path_impacts):
+    excel_files.append('Impacts_labels.xlsx')
 
 #%%
 # Create an empty DataFrame
@@ -266,6 +342,9 @@ print(df_empty)
 
 df_empty.columns = df_empty.columns.str.replace('.xlsx', '')
 
+#Move the Impacts_labels column to the beginning of the database
+col_ingredients = df_empty.pop('Impacts_labels')
+df_empty.insert(0, 'Impacts_labels', col_ingredients)
 
 #%%
 save_path_test = (
@@ -275,36 +354,25 @@ save_path_test = (
 # Save the results to an Excel file
 df_empty.to_excel(save_path_test / 'Impacts_recipes.xlsx', index=False)
         
+#%%
+# List all Excel files in the directory that start with 'impact_ingredients'
+excel_files_ing = [file for file in os.listdir(save_path_impacts) if file.startswith('impacts_per_ingredient') and file.endswith('.xlsx')]
 
+print(excel_files_ing)
 
+#%%
+# Create an empty DataFrame to store the concatenated DataFrames
+concatenated_impacts_ing = pd.DataFrame()
 
+# Iterate over the Excel files
+for file in excel_files_ing:
+    # Load the Excel file into a DataFrame
+    df_ing = pd.read_excel(os.path.join(save_path_impacts, file))
+    
+    # Concatenate the DataFrame with the existing concatenated DataFrame
+    concatenated_impacts_ing = pd.concat([concatenated_impacts_ing, df_ing], ignore_index=True)
 
+print(concatenated_impacts_ing)
 
-# %%
-
-#! Calculations per recipe per ingredient
-
-
-row_labels = [
-            'Land Use (m2) Arable',
-            'Land Use (m2) Fallow',
-            'Land Use (m2) Perm Past',
-            'GHG (kg CO2eq, IPCC 2013) LUC',
-            'GHG (kg CO2eq, IPCC 2013) Feed',
-            'GHG (kg CO2eq, IPCC 2013) Farm',
-            'GHG (kg CO2eq, IPCC 2013) Processing',
-            'GHG (kg CO2eq, IPCC 2013) Transport',
-            'GHG (kg CO2eq, IPCC 2013) Packging',
-            'GHG (kg CO2eq, IPCC 2013) Retail',
-            'Acid.(kg SO2eq)',
-            'Eutr. (kg PO43-eq)',
-            'Freshwater (L)',
-            'Str-Wt WU (L eq)'
-        ]
-
-labels_df = pd.DataFrame(row_labels)
-
-recipe_impacts_final_total_1 = pd.DataFrame(recipe_impacts_final_total, index= row_labels)
-
-print(recipe_impacts_final_total_1)
+concatenated_impacts_ing.to_excel(save_path_test / 'Impacts_per_ingredients.xlsx', index=False)
 # %%
