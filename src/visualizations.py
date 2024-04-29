@@ -31,14 +31,16 @@ plt.title('Environmental Impacts Distribution by Recipe')
 plt.xlabel('Impact Category')
 plt.ylabel('Percentage')
 
+
+
 # Displaying the legend
 plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 
+# Saving the plot
+plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_100_recipes.png'), bbox_inches='tight')
+
 # Showing the plot
 plt.show()
-
-# Saving the plot
-plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_100_recipes.png'))
 
 # %%
 
@@ -86,11 +88,11 @@ for recipe in df_stacked_ing['Recipe'].unique():
     # Displaying the legend
     plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
     
+    # Saving the plot
+    plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_100_recipes_ing_{recipe}.png'), bbox_inches='tight')
+    
     # Showing the plot
     plt.show()
-
-    # Saving the plot
-    plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_100_recipes_ing_{recipe}.png'))
 
 
 
@@ -125,11 +127,11 @@ plt.ylabel('GHG Emissions (Kg CO2 eq)')
 # Displaying the legend
 plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 
+# Saving the plot
+plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_GHG.png'), bbox_inches='tight')
+
 # Showing the plot
 plt.show()
-
-# Saving the plot
-plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_GHG.png'))
 
 #%%
 #* Impact for the recipe with the highest impact per ingredient
@@ -175,13 +177,11 @@ plt.ylabel('Kg CO2 eq')
 # Displaying the legend
 plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
     
+# Saving the plot
+plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_GHG_{highest_impact_recipe_GHG}.png', bbox_inches='tight'))
+
 # Showing the plot
 plt.show()
-
-# Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_GHG_{highest_impact_recipe_GHG}.png'))
-
-
 
 #%%
 #! Land Use
@@ -208,11 +208,11 @@ plt.ylabel('m2')
 # Displaying the legend
 plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 
+# Saving the plot
+plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_LU.png'), bbox_inches='tight')
+
 # Showing the plot
 plt.show()
-
-# Saving the plot
-plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_LU.png'))
 
 # %%
 
@@ -261,14 +261,11 @@ plt.ylabel('m2')
 # Displaying the legend
 plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
     
+# Saving the plot
+plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_LU_{highest_impact_recipe_LU}.png'), bbox_inches='tight')
+
 # Showing the plot
 plt.show()
-
-# Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_LU_{highest_impact_recipe_LU}.png'))
-
-
-
 
 #%%
 #! Acidification
@@ -295,11 +292,11 @@ plt.ylabel('kg SO2eq')
 # Displaying the legend
 plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 
+# Saving the plot
+plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_Acd.png'), bbox_inches='tight')
+
 # Showing the plot
 plt.show()
-
-# Saving the plot
-plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_Acd.png'))
 
 # %%
 
@@ -348,12 +345,11 @@ plt.ylabel('kg SO2eq')
 # Displaying the legend
 plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
     
+# Saving the plot
+plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_Acd_{highest_impact_recipe_Acd}.png'), bbox_inches='tight')
+
 # Showing the plot
 plt.show()
-
-# Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_Acd_{highest_impact_recipe_Acd}.png'))
-
 
 #%%
 
@@ -381,11 +377,11 @@ plt.ylabel('kg PO43-eq')
 # Displaying the legend
 plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 
+# Saving the plot
+plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_Eut.png'), bbox_inches='tight')
+
 # Showing the plot
 plt.show()
-
-# Saving the plot
-plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_Eut.png'))
 
 # %%
 
@@ -434,13 +430,11 @@ plt.ylabel('kg PO43-eq')
 # Displaying the legend
 plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
     
+# Saving the plot
+plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_Eut_{highest_impact_recipe_Eut}.png'), bbox_inches='tight')
+
 # Showing the plot
 plt.show()
-
-# Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_Eut_{highest_impact_recipe_Eut}.png'))
-
-
 
 #%%
 
@@ -468,11 +462,11 @@ plt.ylabel('Liters')
 # Displaying the legend
 plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 
+# Saving the plot
+plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_FW.png'), bbox_inches='tight')
+
 # Showing the plot
 plt.show()
-
-# Saving the plot
-plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_FW.png'))
 
 #%%
 
@@ -521,12 +515,11 @@ plt.ylabel('Liters')
 # Displaying the legend
 plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
     
+# Saving the plot
+plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_FW_{highest_impact_recipe_FW}.png'), bbox_inches='tight')
+
 # Showing the plot
 plt.show()
-
-# Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_FW_{highest_impact_recipe_FW}.png'))
-
 
 # %%
 
@@ -537,7 +530,7 @@ plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_FW_{highest_impact_rec
 df_stacked_Str = data_recipe
 
 #Filtering to show only Str-Wt WU
-df_stacked_Str = df_stacked_Str[df_stacked_Str['Impacts_labels'].str.contains('Str-Wt WU')]
+df_stacked_Str = df_stacked_Str[df_stacked_Str['Impacts_labels'].str.contains('Scarcity-Weighted')]
 
 df_stacked_Str = pd.DataFrame(df_stacked_Str)
 
@@ -555,11 +548,11 @@ plt.ylabel('Liters eq')
 # Displaying the legend
 plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 
+# Saving the plot
+plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_Str.png'), bbox_inches='tight')
+
 # Showing the plot
 plt.show()
-
-# Saving the plot
-plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_Str.png'))
 
 # %%
 #* Impact for the recipe with the highest impact per ingredient
@@ -607,10 +600,10 @@ plt.ylabel('Liters eq')
 # Displaying the legend
 plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
     
+# Saving the plot
+plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_Str_{highest_impact_recipe_Str}.png'), bbox_inches='tight')
+
 # Showing the plot
 plt.show()
-
-# Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_Str_{highest_impact_recipe_Str}.png'))
 
 # %%
