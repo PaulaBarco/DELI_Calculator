@@ -11,7 +11,7 @@ data_recipe = pfuncs.dataset_reader('Impacts_recipes.xlsx', 'interim',
                              False)
 
 #%%
-#!SPIDER WEB CHART
+#!SPIDER WEB CHART - Relative environmental performance of recipes
 
 plt.style.use('ggplot')
 
@@ -37,6 +37,8 @@ scaled_data_with_labels = pd.concat([categories, scaled_values], axis=1)
 # Extract columns for the radar chart
 impacts = scaled_data_with_labels['Impacts_labels'].tolist()
 recipes_data = scaled_data_with_labels.drop(columns='Impacts_labels')
+
+print(scaled_data_with_labels)
 
 # Number of recipes
 num_recipes = scaled_values.shape[1]
@@ -70,7 +72,7 @@ ax.xaxis.grid(True, linestyle='-', linewidth=0.5, alpha=0.8, color='darkgrey')  
 # Adjust the z-order for the grid lines to be higher than the z-order of the subplot
 ax.xaxis.grid(zorder=2)  # Set zorder to 2
 
-plt.title(f'Environmental performance of recipes', y=1.05, fontweight='bold')
+plt.title(f'Relative environmental performance of recipes', y=1.05, fontweight='bold')
 
 # Set the z-order for the axis labels to be higher than the z-order of the grid lines
 ax.set_thetagrids(angles*180/np.pi, impacts, zorder=3)  # Set zorder to 3
@@ -78,6 +80,10 @@ ax.set_thetagrids(angles*180/np.pi, impacts, zorder=3)  # Set zorder to 3
 plt.grid(True)
 plt.tight_layout()
 plt.legend(loc='lower right', bbox_to_anchor=(0.05, 0.05), fontsize='small')
+
+# Saving the plot
+plt.savefig(os.path.join(save_path_impacts, 'Spider web chart.png'), bbox_inches='tight')
+
 plt.show()
 
 # %%
@@ -91,6 +97,13 @@ data_stacked_ing = pfuncs.dataset_reader('Impacts_per_ingredients.xlsx', 'interi
                              False)
 
 df_stacked_ing = pd.DataFrame(data_stacked_ing)
+
+custom_colors = [
+    '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+    '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf',
+    '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5',
+    '#c49c94', '#f7b6d2', '#c7c7c7', '#dbdb8d', '#9edae5'
+]
 
 # Loop for iterating over each recipe in order to get visualizations with the ingredients breakdown
 for recipe in df_stacked_ing['Recipe'].unique():
@@ -108,9 +121,11 @@ for recipe in df_stacked_ing['Recipe'].unique():
     
     # Calculating percentages
     df_percent_ing = df_transposed.div(df_transposed.sum(axis=1), axis=0) * 100
+
+    print(df_percent_ing)
     
     # Plotting the stacked bar chart
-    ax = df_percent_ing.plot(kind='bar', stacked=True, figsize=(12, 8), linewidth=1)
+    ax = df_percent_ing.plot(kind='bar', stacked=True, figsize=(12, 8), linewidth=1, color=custom_colors[:len(df_percent_ing.columns)])
     
     # Set background color to white
     ax.set_facecolor('white')
@@ -125,7 +140,7 @@ for recipe in df_stacked_ing['Recipe'].unique():
     ax.spines['left'].set_color('black')
     
     # Rotate x-axis labels by 45 degrees
-    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')  # Rotate labels and align them to the right
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right', fontsize=12)
 
     # Displaying the legend
     legend = plt.legend(title='Ingredients', loc='upper left', bbox_to_anchor=(1, 1), frameon=True, edgecolor='black', )
@@ -156,6 +171,8 @@ df_stacked_GHG = df_stacked_GHG[df_stacked_GHG['Impacts_labels'].str.contains('G
 
 df_stacked_GHG = pd.DataFrame(df_stacked_GHG)
 
+print(df_stacked_GHG)
+
 # Setting 'Impacts_labels' column as index
 df_stacked_GHG.set_index('Impacts_labels', inplace=True)
 
@@ -175,7 +192,10 @@ ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
 # Rotate x-axis labels by 45 degrees
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')  # Rotate labels and align them to the right
+ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right', fontsize=12)  # Rotate labels and align them to the right
+
+# Set y-axis labels with increased font size
+ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Displaying the legend
 legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1),  frameon=True, edgecolor='black',)
@@ -202,12 +222,8 @@ print(highest_impact_recipe_GHG)
 #Reading the data
 df_stacked_ing_GHG = data_stacked_ing
 
-print(df_stacked_ing_GHG)
-
 #Filtering the dataframe by the recipe with the highest impact
 filtered_df_stacked_ing_GHG = df_stacked_ing_GHG[df_stacked_ing_GHG['Recipe'].str.startswith(highest_impact_recipe_GHG[7:])]
-
-print(filtered_df_stacked_ing_GHG)
 
 #Removing the impact categories not needed for this chart
 filtered_df_stacked_ing_GHG = filtered_df_stacked_ing_GHG.drop(columns = ['Recipe',
@@ -237,7 +253,10 @@ ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
 # Rotate x-axis labels by 45 degrees
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')  # Rotate labels and align them to the right
+ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right', fontsize=12)  # Rotate labels and align them to the right
+
+# Set y-axis labels with increased font size
+ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
 plt.title(f'GHG emissions by ingredient - {highest_impact_recipe_GHG}', y=1.05, fontweight='bold')
@@ -268,6 +287,8 @@ df_stacked_LU = df_stacked_LU[df_stacked_LU['Impacts_labels'].str.contains('Land
 
 df_stacked_LU = pd.DataFrame(df_stacked_LU)
 
+print(df_stacked_LU)
+
 # Setting 'Impacts labels' column as index
 df_stacked_LU.set_index('Impacts_labels', inplace=True)
 
@@ -281,8 +302,11 @@ ax.set_facecolor('white')
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 45 degrees
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')  # Rotate labels and align them to the right
+# Rotate x-axis labels by 0 degrees
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)
+
+# Set y-axis labels with increased font size
+ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
 plt.title('Land Use by Land type and Recipe', y=1.05, fontweight='bold')
@@ -342,8 +366,11 @@ ax.set_facecolor('white')
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 45 degrees
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')  # Rotate labels and align them to the right
+# Rotate x-axis labels by 0 degrees
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)
+
+# Set y-axis labels with increased font size
+ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
 plt.title(f'Land use by ingredient - {highest_impact_recipe_LU}', y=1.05, fontweight='bold')
@@ -371,6 +398,8 @@ df_stacked_Acd = df_stacked_Acd[df_stacked_Acd['Impacts_labels'].str.contains('A
 
 df_stacked_Acd = pd.DataFrame(df_stacked_Acd)
 
+print(df_stacked_Acd)
+
 # Setting 'Impacts_labels' column as index
 df_stacked_Acd.set_index('Impacts_labels', inplace=True)
 
@@ -384,8 +413,11 @@ ax.set_facecolor('white')
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 45 degrees
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')  # Rotate labels and align them to the right
+# Rotate x-axis labels by 0 degrees
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)
+
+# Set y-axis labels with increased font size
+ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
 plt.title('Acidification by Recipe', y=1.05, fontweight='bold')
@@ -445,8 +477,11 @@ ax.set_facecolor('white')
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 45 degrees
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')  # Rotate labels and align them to the right
+# Rotate x-axis labels by 0 degrees
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)  
+
+# Set y-axis labels with increased font size
+ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
 plt.title(f'Acidification by ingredient - {highest_impact_recipe_Acd}', y=1.05, fontweight='bold')
@@ -475,6 +510,8 @@ df_stacked_Eut = df_stacked_Eut[df_stacked_Eut['Impacts_labels'].str.contains('E
 
 df_stacked_Eut = pd.DataFrame(df_stacked_Eut)
 
+print(df_stacked_Eut)
+
 # Setting 'Impact labels' column as index
 df_stacked_Eut.set_index('Impacts_labels', inplace=True)
 
@@ -488,8 +525,11 @@ ax.set_facecolor('white')
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 45 degrees
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')  # Rotate labels and align them to the right
+# Rotate x-axis labels by 0 degrees
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)  
+
+# Set y-axis labels with increased font size
+ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
 plt.title('Eutrophication by Recipe', y=1.05, fontweight='bold')
@@ -549,8 +589,11 @@ ax.set_facecolor('white')
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 45 degrees
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')  # Rotate labels and align them to the right
+# Rotate x-axis labels by 0 degrees
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)  
+
+# Set y-axis labels with increased font size
+ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
 plt.title(f'Eutrophication by ingredient - {highest_impact_recipe_Eut}', y=1.05, fontweight='bold')
@@ -579,6 +622,8 @@ df_stacked_FW = df_stacked_FW[df_stacked_FW['Impacts_labels'].str.contains('Fres
 
 df_stacked_FW = pd.DataFrame(df_stacked_FW)
 
+print(df_stacked_FW)
+
 # Setting 'Impacts_labels' column as index
 df_stacked_FW.set_index('Impacts_labels', inplace=True)
 
@@ -592,12 +637,15 @@ ax.set_facecolor('white')
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 45 degrees
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')  # Rotate labels and align them to the right
+# Rotate x-axis labels by 0 degrees
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12) 
+
+# Set y-axis labels with increased font size
+ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
 plt.title('Freshwater by Recipe', y=1.05, fontweight='bold')
-plt.xlabel('Freshwater')
+plt.xlabel('Impact category')
 plt.ylabel('Liters')
 
 # Displaying the legend
@@ -653,8 +701,11 @@ ax.set_facecolor('white')
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 45 degrees
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')  # Rotate labels and align them to the right
+# Rotate x-axis labels by 0 degrees
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)
+
+# Set y-axis labels with increased font size
+ax.set_yticklabels(ax.get_yticks(), fontsize=12)
  
 # Adding labels and title
 plt.title(f'Freshwater by ingredient - {highest_impact_recipe_FW}', y=1.05, fontweight='bold')
@@ -684,6 +735,8 @@ df_stacked_Str = df_stacked_Str[df_stacked_Str['Impacts_labels'].str.contains('S
 
 df_stacked_Str = pd.DataFrame(df_stacked_Str)
 
+print(df_stacked_Str)
+
 # Setting 'Impact_labels' column as index
 df_stacked_Str.set_index('Impacts_labels', inplace=True)
 
@@ -697,8 +750,11 @@ ax.set_facecolor('white')
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 45 degrees
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')  # Rotate labels and align them to the right
+# Rotate x-axis labels by 0 degrees
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12) 
+
+# Set y-axis labels with increased font size
+ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
 plt.title('Scarcity-Weighted FW by Recipe', y=1.05, fontweight='bold')
@@ -757,8 +813,11 @@ ax.set_facecolor('white')
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 45 degrees
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')  # Rotate labels and align them to the right
+# Rotate x-axis labels by 0 degrees
+ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)  
+
+# Set y-axis labels with increased font size
+ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
 plt.title(f'Scarcity-Weighted FW by ingredient - {highest_impact_recipe_Str}', y=1.05, fontweight='bold')
@@ -776,3 +835,67 @@ plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_Str_{highest_impact_re
 plt.show()
 
 #%%
+#! RESULTS FROM THE SURVEY
+
+from matplotlib.ticker import MaxNLocator
+
+data_survey = pfuncs.dataset_reader('Results_survey.xlsx', 'interim', 
+                             False)
+
+
+df_survey = pd.DataFrame(data_survey)
+
+#Removing the impact categories not needed for this chart
+filtered_df_survey= df_survey.drop(columns = ['Marca temporal', 'Is there anything that you want to highlight from this prototype?', 
+                                                        'Are there any comments or suggestions that can help us improve the user experience and prototype?'])
+
+# Define the full range of Likert scale options
+likert_scale = [1, 2, 3, 4, 5]
+
+# Calculate the frequency of each response for each question
+response_counts = filtered_df_survey.apply(pd.Series.value_counts).reindex(likert_scale, fill_value=0)
+
+# Define colors to match the provided chart (adjust as needed based on the actual colors in the provided chart)
+colors = {
+    1: "#1f77b4",  # Blue
+    2: "#ff7f0e",  # Orange
+    3: "#2ca02c",  # Green
+    4: "#d62728",  # Red
+    5: "#9467bd"   # Purple
+}
+
+# Plot a bar chart for each question
+for question in filtered_df_survey.columns:
+    fig, ax = plt.subplots(figsize=(12, 8))
+    
+    # Plotting the bar chart with matching colors
+    bars = ax.bar(response_counts.index, response_counts[question], color=[colors[i] for i in response_counts.index], edgecolor='black')
+    
+    # Set background color to white
+    ax.set_facecolor('white')
+
+    # Set axis lines to black
+    ax.spines['bottom'].set_color('black')
+    ax.spines['left'].set_color('black')
+
+    # Rotate x-axis labels by 0 degrees
+    ax.set_xticks(likert_scale)
+    ax.set_xticklabels(likert_scale, rotation=0, ha='center', fontsize=12)
+
+    # Set y-axis labels with increased font size
+    ax.set_yticklabels(ax.get_yticks(), fontsize=12)
+
+    # Set y-axis to show only full numbers
+    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+
+    # Adding labels and title
+    plt.title(f'{question}', y=1.05, fontweight='bold')
+    plt.xlabel('Likert Scale')
+    plt.ylabel('Frequency')
+
+    # Showing the plot
+    plt.show()
+
+
+
+# %%

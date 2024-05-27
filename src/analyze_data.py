@@ -336,7 +336,6 @@ print(concatenated_impacts_ing)
 
 concatenated_impacts_ing.to_excel(save_path_test / 'Impacts_per_ingredients.xlsx', index=False)
 
-#%%
 
 #! IMPACT CATEGORIES TOTALS
 

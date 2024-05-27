@@ -13,7 +13,6 @@ from pathlib import Path
 import ProjectFunctions as pfuncs
 from constants import data_path
 
-#%%
 #os.getcwd()
 #directory_path = Path("..")
 save_path = (
@@ -21,20 +20,16 @@ save_path = (
     / "interim"
 )
 
-#%%
-#df1 = pd.read_excel('aaq0216_datas2.xls', sheet_name='Results - Global Totals')
 df1 = pfuncs.dataset_reader('aaq0216_datas2.xls', 'raw', 
                              True)
 
 print(df1)
 
-
-# %%
 #Substracting the data needed
 df2 = df1.iloc[1:56, 0:16]
 
 print(df2)
-# %%
+
 # ** CLEANING DATASET
 # Change the name of some columns
 df3 = (
@@ -55,21 +50,21 @@ df3 = (
 )
 
 print(df3)
-#%%
+
 #Removing the second row
-#df4 = df3.drop(['Product'])
+
 df4 = df3.iloc[1:,:]
 print(df4)
-#%%
+
 #Dropping if all values in the row are nan
 df5 = df4.dropna(how='all') 
 
 print (df5)
-#%%
+
 #Checking some values
 print(df5['Acid.(kg SO2eq)'].loc[df5.index[10]])
 
-# %%
+
 # Save the database created
 df5.to_excel(save_path / 'Clean_Poore&Nemecek.xls', index=False)
 

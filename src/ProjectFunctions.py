@@ -15,11 +15,6 @@ from pathlib import Path
 
 from constants import data_path
 
-#%%
-# directory_path = Path("..")
-# os.getcwd()
-
-# %%
 # We Create a function to obatin read datasets
 # name --> name of the csv that we want to read
 # data_folder --> in which folder it is located
