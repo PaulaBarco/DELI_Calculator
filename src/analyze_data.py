@@ -12,18 +12,18 @@ Date: 2024-02-06
 import pandas as pd
 import os
 from pathlib import Path
-import ProjectFunctions as pfuncs
+import project_functions as pfuncs
 from constants import data_path
 from constants import recipe_directory
 from constants import save_path_impacts
 
 
 #Read the Clean Poore & Nemecek database
-fooditem_PooreNemecek = pfuncs.dataset_reader('Fooditem_PooreNemecek.xlsx', 'interim', 
+fooditem_PooreNemecek = pfuncs.dataset_reader('food_item_poore_and_nemecek.xlsx', 'interim', 
                              False)
 
 #Read the conversion factors for cups, tbsp, tsp, etc.
-Conversion_factors = pfuncs.dataset_reader('Conversion_factors.xlsx', 'interim', 
+Conversion_factors = pfuncs.dataset_reader('conversion_factors.xlsx', 'interim', 
                              False)
 
 # Counter to keep track of the file suffix
@@ -273,7 +273,7 @@ print(labels_df)
 
 #Save a file with the impact labels
 
-labels_df.to_excel(save_path_impacts / 'Impacts_labels.xlsx', index=False)
+labels_df.to_excel(save_path_impacts / 'impacts_labels.xlsx', index=False)
 
 
 # List all the files that are in the Impact folder
@@ -281,8 +281,8 @@ excel_files = [file for file in os.listdir(save_path_impacts) if file.startswith
 
 print(excel_files)
 # Add the "labels.xlsx" file if it exists
-if 'Impacts_labels.xlsx' in os.listdir(save_path_impacts):
-    excel_files.append('Impacts_labels.xlsx')
+if 'impacts_labels.xlsx' in os.listdir(save_path_impacts):
+    excel_files.append('impacts_labels.xlsx')
 
 # Create an empty DataFrame
 df_empty = pd.DataFrame()
@@ -304,8 +304,8 @@ print(df_empty)
 df_empty.columns = df_empty.columns.str.replace('.xlsx', '')
 
 #Move the Impacts_labels column to the beginning of the database
-col_ingredients = df_empty.pop('Impacts_labels')
-df_empty.insert(0, 'Impacts_labels', col_ingredients)
+col_ingredients = df_empty.pop('impacts_labels')
+df_empty.insert(0, 'impacts_labels', col_ingredients)
 
 
 save_path_test = (
@@ -313,7 +313,7 @@ save_path_test = (
     / "interim"
 )
 # Save the results to an Excel file
-df_empty.to_excel(save_path_test / 'Impacts_recipes.xlsx', index=False)
+df_empty.to_excel(save_path_test / 'impacts_recipes.xlsx', index=False)
         
 # List all Excel files in the directory that start with 'impact_ingredients'
 excel_files_ing = [file for file in os.listdir(save_path_impacts) if file.endswith('impacts_per_ingredient.xlsx')]
@@ -334,17 +334,17 @@ for file in excel_files_ing:
 
 print(concatenated_impacts_ing)
 
-concatenated_impacts_ing.to_excel(save_path_test / 'Impacts_per_ingredients.xlsx', index=False)
+concatenated_impacts_ing.to_excel(save_path_test / 'impacts_per_ingredients.xlsx', index=False)
 
 
 #! IMPACT CATEGORIES TOTALS
 
 #Read the Clean Poore & Nemecek database
-recipe_impacts_test = pfuncs.dataset_reader('Impacts_recipes.xlsx', 'interim', 
+recipe_impacts_test = pfuncs.dataset_reader('impacts_recipes.xlsx', 'interim', 
                              False)
 
 # Find rows containing GHG emissions
-ghg_rows = recipe_impacts_test['Impacts_labels'].str.contains('GHG')
+ghg_rows = recipe_impacts_test['impacts_labels'].str.contains('GHG')
 
 print(ghg_rows)
 # Sum rows with GHG emissions into one row
@@ -352,7 +352,7 @@ recipe_impacts_test.loc['Total GHG Emissions'] = recipe_impacts_test.loc[ghg_row
 
 print(recipe_impacts_test)
 
-recipe_impacts_test.set_index('Impacts_labels', inplace=True)
+recipe_impacts_test.set_index('impacts_labels', inplace=True)
 
 # Rows to remove (based on their labels/index values)
 rows_to_remove = ['GHG LUC', 
@@ -370,14 +370,14 @@ print(recipe_impacts_test)
 # Reset index before summing Land Use rows
 recipe_impacts_test.reset_index(inplace=True)
 
-LU_rows = recipe_impacts_test['Impacts_labels'].str.contains('Land Use')
+LU_rows = recipe_impacts_test['impacts_labels'].str.contains('Land Use')
 
 
 # Sum rows with GHG emissions into one row
 recipe_impacts_test.loc['Total Land Use'] = recipe_impacts_test.loc[LU_rows].sum()
 
 
-recipe_impacts_test.set_index('Impacts_labels', inplace=True)
+recipe_impacts_test.set_index('impacts_labels', inplace=True)
 
 # Rows to remove (based on their labels/index values)
 rows_to_remove2 = ['Land Use Arable', 
@@ -397,8 +397,8 @@ impacts_labels = [
     'GHG emissions',
     'Land use']
 
-recipe_impacts_test.insert(0, 'Impacts_labels', impacts_labels)
+recipe_impacts_test.insert(0, 'impacts_labels', impacts_labels)
 
 
-recipe_impacts_test.to_excel(save_path_test / 'Impacts_total.xlsx', index=False)
+recipe_impacts_test.to_excel(save_path_test / 'impacts_total.xlsx', index=False)
 # %%

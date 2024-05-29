@@ -10,7 +10,7 @@ Date: 2024-02-06
 import pandas as pd
 import os
 from pathlib import Path
-import ProjectFunctions as pfuncs
+import project_functions as pfuncs
 from constants import data_path
 
 #os.getcwd()
@@ -22,7 +22,7 @@ save_path = (
 
 
 #Read the Clean Poore & Nemecek database
-Poore_nemecek = pfuncs.dataset_reader('Clean_Poore&Nemecek.xls', 'interim', 
+Poore_nemecek = pfuncs.dataset_reader('clean_poore_and_nemecek.xls', 'interim', 
                              False)
 
 
@@ -41,6 +41,6 @@ fooditem_PooreNemecek.insert(0, 'Ingredient', col_ingredients)
 print(fooditem_PooreNemecek)
 
 # Save the database created in the interim folder
-fooditem_PooreNemecek.to_excel(save_path / 'Fooditem_PooreNemecek.xlsx', index=False)
+fooditem_PooreNemecek.to_excel(save_path / 'food_item_poore_and_nemecek.xlsx', index=False)
 
 # %%

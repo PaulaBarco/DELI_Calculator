@@ -10,7 +10,7 @@ Date: 2024-02-06
 import pandas as pd
 import os
 from pathlib import Path
-import ProjectFunctions as pfuncs
+import project_functions as pfuncs
 from constants import data_path
 
 #os.getcwd()
@@ -66,6 +66,6 @@ print(df5['Acid.(kg SO2eq)'].loc[df5.index[10]])
 
 
 # Save the database created
-df5.to_excel(save_path / 'Clean_Poore&Nemecek.xls', index=False)
+df5.to_excel(save_path / 'clean_poore_and_nemecek.xls', index=False)
 
 # %%

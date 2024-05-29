@@ -3,11 +3,11 @@ import pandas as pd
 import numpy as np
 import os
 import matplotlib.pyplot as plt
-import ProjectFunctions as pfuncs
+import project_functions as pfuncs
 from constants import data_path
 from constants import save_path_impacts
 
-data_recipe = pfuncs.dataset_reader('Impacts_recipes.xlsx', 'interim', 
+data_recipe = pfuncs.dataset_reader('impacts_recipes.xlsx', 'interim', 
                              False)
 
 #%%
@@ -16,11 +16,11 @@ data_recipe = pfuncs.dataset_reader('Impacts_recipes.xlsx', 'interim',
 plt.style.use('ggplot')
 
 # Sample data (replace with your own data)
-data_test = pfuncs.dataset_reader('Impacts_total.xlsx', 'interim', False)
+data_test = pfuncs.dataset_reader('impacts_total.xlsx', 'interim', False)
 data_test = pd.DataFrame(data_test)
 
 # Extract category column
-categories = data_test['Impacts_labels']
+categories = data_test['impacts_labels']
 
 # Extract recipe columns dynamically
 recipe_columns = data_test.columns[1:]  # Exclude the 'Impacts_labels' column
@@ -35,8 +35,8 @@ scaled_values = data_test[recipe_columns].div(highest_values, axis=0) * 100
 scaled_data_with_labels = pd.concat([categories, scaled_values], axis=1)
 
 # Extract columns for the radar chart
-impacts = scaled_data_with_labels['Impacts_labels'].tolist()
-recipes_data = scaled_data_with_labels.drop(columns='Impacts_labels')
+impacts = scaled_data_with_labels['impacts_labels'].tolist()
+recipes_data = scaled_data_with_labels.drop(columns='impacts_labels')
 
 print(scaled_data_with_labels)
 
@@ -82,7 +82,7 @@ plt.tight_layout()
 plt.legend(loc='lower right', bbox_to_anchor=(0.05, 0.05), fontsize='small')
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, 'Spider web chart.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, 'spider_web_chart.png'), bbox_inches='tight')
 
 plt.show()
 
@@ -93,7 +93,7 @@ plt.show()
 #each impact category
 
 # Reading the data broken down into ingredients
-data_stacked_ing = pfuncs.dataset_reader('Impacts_per_ingredients.xlsx', 'interim', 
+data_stacked_ing = pfuncs.dataset_reader('impacts_per_ingredients.xlsx', 'interim', 
                              False)
 
 df_stacked_ing = pd.DataFrame(data_stacked_ing)
@@ -147,7 +147,7 @@ for recipe in df_stacked_ing['Recipe'].unique():
     legend.get_frame().set_facecolor('none')  # Remove filling color
 
     # Saving the plot
-    plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_100_recipes_ing_{recipe}.png'), bbox_inches='tight')
+    plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_100_recipes_ing_{recipe}.png'), bbox_inches='tight')
     
     # Showing the plot
     plt.show()
@@ -167,14 +167,14 @@ for recipe in df_stacked_ing['Recipe'].unique():
 df_stacked_GHG = data_recipe
 
 #Filtering to show only GHG emissions subcategories
-df_stacked_GHG = df_stacked_GHG[df_stacked_GHG['Impacts_labels'].str.contains('GHG')]
+df_stacked_GHG = df_stacked_GHG[df_stacked_GHG['impacts_labels'].str.contains('GHG')]
 
 df_stacked_GHG = pd.DataFrame(df_stacked_GHG)
 
 print(df_stacked_GHG)
 
 # Setting 'Impacts_labels' column as index
-df_stacked_GHG.set_index('Impacts_labels', inplace=True)
+df_stacked_GHG.set_index('impacts_labels', inplace=True)
 
 # Plotting the multiple bar chart
 ax = df_stacked_GHG.plot(kind='bar', figsize=(12, 8))
@@ -205,7 +205,7 @@ legend.get_frame().set_facecolor('none')  # Remove filling color
 plt.tight_layout()
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_GHG.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, 'stacked_bar_recipes_GHG.png'), bbox_inches='tight')
 
 # Showing the plot
 plt.show()
@@ -271,7 +271,7 @@ legend.get_frame().set_facecolor('none')  # Remove filling color
 plt.tight_layout()
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_GHG_{highest_impact_recipe_GHG}.png', bbox_inches='tight'))
+plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_GHG_{highest_impact_recipe_GHG}.png', bbox_inches='tight'))
 
 # Showing the plot
 plt.show()
@@ -283,14 +283,14 @@ plt.show()
 df_stacked_LU = data_recipe
 
 #Filtering to show only Land Use subcategories
-df_stacked_LU = df_stacked_LU[df_stacked_LU['Impacts_labels'].str.contains('Land Use')]
+df_stacked_LU = df_stacked_LU[df_stacked_LU['impacts_labels'].str.contains('Land Use')]
 
 df_stacked_LU = pd.DataFrame(df_stacked_LU)
 
 print(df_stacked_LU)
 
 # Setting 'Impacts labels' column as index
-df_stacked_LU.set_index('Impacts_labels', inplace=True)
+df_stacked_LU.set_index('impacts_labels', inplace=True)
 
 # Plotting the multiple bar chart
 ax = df_stacked_LU.plot(kind='bar', figsize=(12, 8))
@@ -318,7 +318,7 @@ legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1),  fr
 legend.get_frame().set_facecolor('none')  # Remove filling color
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_LU.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, 'stacked_bar_recipes_LU.png'), bbox_inches='tight')
 
 # Showing the plot
 plt.show()
@@ -382,7 +382,7 @@ legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 legend.get_frame().set_facecolor('none')  # Remove filling color
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_LU_{highest_impact_recipe_LU}.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_LU_{highest_impact_recipe_LU}.png'), bbox_inches='tight')
 
 # Showing the plot
 plt.show()
@@ -394,14 +394,14 @@ plt.show()
 df_stacked_Acd = data_recipe
 
 #Filtering to show only Acidification
-df_stacked_Acd = df_stacked_Acd[df_stacked_Acd['Impacts_labels'].str.contains('Acid')]
+df_stacked_Acd = df_stacked_Acd[df_stacked_Acd['impacts_labels'].str.contains('Acid')]
 
 df_stacked_Acd = pd.DataFrame(df_stacked_Acd)
 
 print(df_stacked_Acd)
 
 # Setting 'Impacts_labels' column as index
-df_stacked_Acd.set_index('Impacts_labels', inplace=True)
+df_stacked_Acd.set_index('impacts_labels', inplace=True)
 
 # Plotting the multiple bar chart
 ax = df_stacked_Acd.plot(kind='bar', figsize=(12, 8))
@@ -429,7 +429,7 @@ legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 legend.get_frame().set_facecolor('none')  # Remove filling color
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_Acd.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, 'stacked_bar_recipes_Acd.png'), bbox_inches='tight')
 
 # Showing the plot
 plt.show()
@@ -493,7 +493,7 @@ legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 legend.get_frame().set_facecolor('none')  # Remove filling color
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_Acd_{highest_impact_recipe_Acd}.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_Acd_{highest_impact_recipe_Acd}.png'), bbox_inches='tight')
 
 # Showing the plot
 plt.show()
@@ -506,14 +506,14 @@ plt.show()
 df_stacked_Eut = data_recipe
 
 #Filtering to show only Eutrophication
-df_stacked_Eut = df_stacked_Eut[df_stacked_Eut['Impacts_labels'].str.contains('Eutr')]
+df_stacked_Eut = df_stacked_Eut[df_stacked_Eut['impacts_labels'].str.contains('Eutr')]
 
 df_stacked_Eut = pd.DataFrame(df_stacked_Eut)
 
 print(df_stacked_Eut)
 
 # Setting 'Impact labels' column as index
-df_stacked_Eut.set_index('Impacts_labels', inplace=True)
+df_stacked_Eut.set_index('impacts_labels', inplace=True)
 
 # Plotting the multiple bar chart
 ax = df_stacked_Eut.plot(kind='bar', figsize=(12, 8))
@@ -541,7 +541,7 @@ legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 legend.get_frame().set_facecolor('none')  # Remove filling color
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_Eut.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, 'stacked_bar_recipes_Eut.png'), bbox_inches='tight')
 
 # Showing the plot
 plt.show()
@@ -605,7 +605,7 @@ legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 legend.get_frame().set_facecolor('none')  # Remove filling color
     
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_Eut_{highest_impact_recipe_Eut}.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_Eut_{highest_impact_recipe_Eut}.png'), bbox_inches='tight')
 
 # Showing the plot
 plt.show()
@@ -618,14 +618,14 @@ plt.show()
 df_stacked_FW = data_recipe
 
 #Filtering to show only Freshwater
-df_stacked_FW = df_stacked_FW[df_stacked_FW['Impacts_labels'].str.contains('Freshwater')]
+df_stacked_FW = df_stacked_FW[df_stacked_FW['impacts_labels'].str.contains('Freshwater')]
 
 df_stacked_FW = pd.DataFrame(df_stacked_FW)
 
 print(df_stacked_FW)
 
 # Setting 'Impacts_labels' column as index
-df_stacked_FW.set_index('Impacts_labels', inplace=True)
+df_stacked_FW.set_index('impacts_labels', inplace=True)
 
 # Plotting the multiple bar chart
 ax = df_stacked_FW.plot(kind='bar', figsize=(12, 8))
@@ -653,7 +653,7 @@ legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 legend.get_frame().set_facecolor('none')  # Remove filling color
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_FW.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, 'stacked_bar_recipes_FW.png'), bbox_inches='tight')
 
 # Showing the plot
 plt.show()
@@ -717,7 +717,7 @@ legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 legend.get_frame().set_facecolor('none')  # Remove filling color
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_FW_{highest_impact_recipe_FW}.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_FW_{highest_impact_recipe_FW}.png'), bbox_inches='tight')
 
 # Showing the plot
 plt.show()
@@ -731,14 +731,14 @@ plt.show()
 df_stacked_Str = data_recipe
 
 #Filtering to show only Str-Wt WU
-df_stacked_Str = df_stacked_Str[df_stacked_Str['Impacts_labels'].str.contains('Scarcity-Weighted')]
+df_stacked_Str = df_stacked_Str[df_stacked_Str['impacts_labels'].str.contains('Scarcity-Weighted')]
 
 df_stacked_Str = pd.DataFrame(df_stacked_Str)
 
 print(df_stacked_Str)
 
 # Setting 'Impact_labels' column as index
-df_stacked_Str.set_index('Impacts_labels', inplace=True)
+df_stacked_Str.set_index('impacts_labels', inplace=True)
 
 # Plotting the multiple bar chart
 ax = df_stacked_Str.plot(kind='bar', figsize=(12, 8))
@@ -766,7 +766,7 @@ legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 legend.get_frame().set_facecolor('none')  # Remove filling color
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, 'Stacked_bar_recipes_Str.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, 'stacked_bar_recipes_Str.png'), bbox_inches='tight')
 
 # Showing the plot
 plt.show()
@@ -829,7 +829,7 @@ legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 legend.get_frame().set_facecolor('none')  # Remove filling color
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'Stacked_bar_Str_{highest_impact_recipe_Str}.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_Str_{highest_impact_recipe_Str}.png'), bbox_inches='tight')
 
 # Showing the plot
 plt.show()
@@ -839,7 +839,7 @@ plt.show()
 
 from matplotlib.ticker import MaxNLocator
 
-data_survey = pfuncs.dataset_reader('Results_survey.xlsx', 'interim', 
+data_survey = pfuncs.dataset_reader('results_survey.xlsx', 'interim', 
                              False)
 
 
@@ -898,4 +898,26 @@ for question in filtered_df_survey.columns:
 
 
 
+# %%
+import pkg_resources
+
+# List of libraries to check
+libraries = [
+    'pandas',
+    'pathlib',
+    'os',
+    'numpy',
+    'matplotlib'
+]
+
+# Function to check library versions
+def check_versions(libraries):
+    for lib in libraries:
+        try:
+            version = pkg_resources.get_distribution(lib).version
+            print(f"{lib}: {version}")
+        except pkg_resources.DistributionNotFound:
+            print(f"{lib} is not installed")
+
+check_versions(libraries)
 # %%
