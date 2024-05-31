@@ -164,20 +164,20 @@ for recipe in df_stacked_ing['Recipe'].unique():
 #! GHG
 
 # Reading the data
-df_stacked_GHG = data_recipe
+df_stacked_ghg = data_recipe
 
 #Filtering to show only GHG emissions subcategories
-df_stacked_GHG = df_stacked_GHG[df_stacked_GHG['impacts_labels'].str.contains('GHG')]
+df_stacked_ghg = df_stacked_ghg[df_stacked_ghg['impacts_labels'].str.contains('GHG')]
 
-df_stacked_GHG = pd.DataFrame(df_stacked_GHG)
+df_stacked_ghg = pd.DataFrame(df_stacked_ghg)
 
-print(df_stacked_GHG)
+print(df_stacked_ghg)
 
 # Setting 'Impacts_labels' column as index
-df_stacked_GHG.set_index('impacts_labels', inplace=True)
+df_stacked_ghg.set_index('impacts_labels', inplace=True)
 
 # Plotting the multiple bar chart
-ax = df_stacked_GHG.plot(kind='bar', figsize=(12, 8))
+ax = df_stacked_ghg.plot(kind='bar', figsize=(12, 8))
 
 # Set background color to white
 ax.set_facecolor('white')
@@ -215,18 +215,25 @@ plt.show()
 #Now, the user can zoom in into the details (ingredients) for the recipe with the highest impact
 
 # Finding the recipe with the highest impact
-highest_impact_recipe_GHG = df_stacked_GHG.max().idxmax()
+highest_impact_recipe_ghg = df_stacked_ghg.max().idxmax()
 
-print(highest_impact_recipe_GHG)
+print(highest_impact_recipe_ghg)
+
+custom_colors = [
+    '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+    '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf',
+    '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5',
+    '#c49c94', '#f7b6d2', '#c7c7c7', '#dbdb8d', '#9edae5'
+]
 
 #Reading the data
-df_stacked_ing_GHG = data_stacked_ing
+df_stacked_ing_ghg = data_stacked_ing
 
 #Filtering the dataframe by the recipe with the highest impact
-filtered_df_stacked_ing_GHG = df_stacked_ing_GHG[df_stacked_ing_GHG['Recipe'].str.startswith(highest_impact_recipe_GHG[7:])]
+filtered_df_stacked_ing_ghg = df_stacked_ing_ghg[df_stacked_ing_ghg['Recipe'].str.startswith(highest_impact_recipe_ghg[7:])]
 
 #Removing the impact categories not needed for this chart
-filtered_df_stacked_ing_GHG = filtered_df_stacked_ing_GHG.drop(columns = ['Recipe',
+filtered_df_stacked_ing_ghg = filtered_df_stacked_ing_ghg.drop(columns = ['Recipe',
                                                         'Land Use Arable', 'Land Use Fallow', 
                                                         'Land Use Perm Past', 
                                                         'Acidification',
@@ -235,15 +242,15 @@ filtered_df_stacked_ing_GHG = filtered_df_stacked_ing_GHG.drop(columns = ['Recip
                                                         'Scarcity-Weighted FW'])
 
 #Setting the column Ingredient as index
-filtered_df_stacked_ing_GHG.set_index('Ingredient', inplace=True)
+filtered_df_stacked_ing_ghg.set_index('Ingredient', inplace=True)
   
 # Transposing the DataFrame so the data follows the same format as before which is needed for a stacked bar chart
-df_stacked_transposed_GHG = filtered_df_stacked_ing_GHG.T
+df_stacked_transposed_ghg = filtered_df_stacked_ing_ghg.T
 
-print(df_stacked_transposed_GHG)
+print(df_stacked_transposed_ghg)
 
 # Plotting the stacked bar chart
-ax = df_stacked_transposed_GHG.plot(kind='bar', stacked=True, figsize=(12, 8))
+ax = df_stacked_transposed_ghg.plot(kind='bar', stacked=True, figsize=(12, 8), color=custom_colors[:len(df_stacked_transposed_ghg.columns)])
 
 # Set background color to white
 ax.set_facecolor('white')
@@ -259,9 +266,9 @@ ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right', fontsize=12)  
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
-plt.title(f'GHG emissions by ingredient - {highest_impact_recipe_GHG}', y=1.05, fontweight='bold')
+plt.title(f'GHG emissions by ingredient - {highest_impact_recipe_ghg}', y=1.05, fontweight='bold')
 plt.xlabel('Impact Category')
-plt.ylabel('Kg CO2 eq')
+plt.ylabel('kg CO2 eq')
     
 # Displaying the legend
 legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
@@ -271,7 +278,7 @@ legend.get_frame().set_facecolor('none')  # Remove filling color
 plt.tight_layout()
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_GHG_{highest_impact_recipe_GHG}.png', bbox_inches='tight'))
+plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_GHG_{highest_impact_recipe_ghg}.png'))
 
 # Showing the plot
 plt.show()
@@ -280,20 +287,20 @@ plt.show()
 #! Land Use
 
 #Reading the data
-df_stacked_LU = data_recipe
+df_stacked_lu = data_recipe
 
 #Filtering to show only Land Use subcategories
-df_stacked_LU = df_stacked_LU[df_stacked_LU['impacts_labels'].str.contains('Land Use')]
+df_stacked_lu = df_stacked_lu[df_stacked_lu['impacts_labels'].str.contains('Land Use')]
 
-df_stacked_LU = pd.DataFrame(df_stacked_LU)
+df_stacked_lu = pd.DataFrame(df_stacked_lu)
 
-print(df_stacked_LU)
+print(df_stacked_lu)
 
 # Setting 'Impacts labels' column as index
-df_stacked_LU.set_index('impacts_labels', inplace=True)
+df_stacked_lu.set_index('impacts_labels', inplace=True)
 
 # Plotting the multiple bar chart
-ax = df_stacked_LU.plot(kind='bar', figsize=(12, 8))
+ax = df_stacked_lu.plot(kind='bar', figsize=(12, 8))
 
 # Set background color to white
 ax.set_facecolor('white')
@@ -328,18 +335,25 @@ plt.show()
 #* Impact for the recipe with the highest impact per ingredient
 
 # Finding the recipe with the highest impact
-highest_impact_recipe_LU = df_stacked_LU.max().idxmax()
+highest_impact_recipe_lu = df_stacked_lu.max().idxmax()
 
-print(highest_impact_recipe_LU)
+print(highest_impact_recipe_lu)
+
+custom_colors = [
+    '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+    '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf',
+    '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5',
+    '#c49c94', '#f7b6d2', '#c7c7c7', '#dbdb8d', '#9edae5'
+]
 
 #Reading the data
-df_stacked_ing_LU = data_stacked_ing
+df_stacked_ing_lu = data_stacked_ing
 
 #Filtering the dataframe by the recipe with the highest impact
-filtered_df_stacked_ing_LU = df_stacked_ing_LU[df_stacked_ing_LU['Recipe'].str.startswith(highest_impact_recipe_LU[7:])]
+filtered_df_stacked_ing_lu = df_stacked_ing_lu[df_stacked_ing_lu['Recipe'].str.startswith(highest_impact_recipe_lu[7:])]
 
 #Removing the impact categories not needed for this chart
-filtered_df_stacked_ing_LU = filtered_df_stacked_ing_LU.drop(columns = ['Recipe', 'GHG LUC', 
+filtered_df_stacked_ing_lu = filtered_df_stacked_ing_lu.drop(columns = ['Recipe', 'GHG LUC', 
                                                         'GHG Feed',
                                                         'GHG Farm',
                                                         'GHG Processing',
@@ -351,13 +365,13 @@ filtered_df_stacked_ing_LU = filtered_df_stacked_ing_LU.drop(columns = ['Recipe'
                                                         'Freshwater Withdrawals (FW)',
                                                         'Scarcity-Weighted FW'])
 
-filtered_df_stacked_ing_LU.set_index('Ingredient', inplace=True)
+filtered_df_stacked_ing_lu.set_index('Ingredient', inplace=True)
   
 # Transposing the DataFrame so the data follows the same format as before which is needed for a stacked bar chart
-df_stacked_transposed_LU = filtered_df_stacked_ing_LU.T
+df_stacked_transposed_lu = filtered_df_stacked_ing_lu.T
 
 # Plotting the stacked bar chart
-ax = df_stacked_transposed_LU.plot(kind='bar', stacked=True, figsize=(12, 8))
+ax = df_stacked_transposed_lu.plot(kind='bar', stacked=True, figsize=(12, 8), color=custom_colors[:len(df_stacked_transposed_lu.columns)])
 
 # Set background color to white
 ax.set_facecolor('white')
@@ -373,7 +387,7 @@ ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
-plt.title(f'Land use by ingredient - {highest_impact_recipe_LU}', y=1.05, fontweight='bold')
+plt.title(f'Land use by ingredient - {highest_impact_recipe_lu}', y=1.05, fontweight='bold')
 plt.xlabel('Impact Category')
 plt.ylabel('m2')
     
@@ -382,7 +396,7 @@ legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 legend.get_frame().set_facecolor('none')  # Remove filling color
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_LU_{highest_impact_recipe_LU}.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_LU_{highest_impact_recipe_lu}.png'), bbox_inches='tight')
 
 # Showing the plot
 plt.show()
@@ -391,20 +405,20 @@ plt.show()
 #! Acidification
 
 #Reading the data
-df_stacked_Acd = data_recipe
+df_stacked_acd = data_recipe
 
 #Filtering to show only Acidification
-df_stacked_Acd = df_stacked_Acd[df_stacked_Acd['impacts_labels'].str.contains('Acid')]
+df_stacked_acd = df_stacked_acd[df_stacked_acd['impacts_labels'].str.contains('Acid')]
 
-df_stacked_Acd = pd.DataFrame(df_stacked_Acd)
+df_stacked_acd = pd.DataFrame(df_stacked_acd)
 
-print(df_stacked_Acd)
+print(df_stacked_acd)
 
 # Setting 'Impacts_labels' column as index
-df_stacked_Acd.set_index('impacts_labels', inplace=True)
+df_stacked_acd.set_index('impacts_labels', inplace=True)
 
 # Plotting the multiple bar chart
-ax = df_stacked_Acd.plot(kind='bar', figsize=(12, 8))
+ax = df_stacked_acd.plot(kind='bar', figsize=(12, 8))
 
 # Set background color to white
 ax.set_facecolor('white')
@@ -439,18 +453,25 @@ plt.show()
 #* Impact for the recipe with the highest impact per ingredient
 
 # Finding the recipe with the highest impact
-highest_impact_recipe_Acd = df_stacked_Acd.max().idxmax()
+highest_impact_recipe_acd = df_stacked_acd.max().idxmax()
 
-print(highest_impact_recipe_Acd)
+print(highest_impact_recipe_acd)
+
+custom_colors = [
+    '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+    '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf',
+    '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5',
+    '#c49c94', '#f7b6d2', '#c7c7c7', '#dbdb8d', '#9edae5'
+]
 
 #Reading the data
-df_stacked_ing_Acd = data_stacked_ing
+df_stacked_ing_acd = data_stacked_ing
 
 #Filtering the dataframe by the recipe with the highest impact
-filtered_df_stacked_ing_Acd = df_stacked_ing_Acd[df_stacked_ing_Acd['Recipe'].str.startswith(highest_impact_recipe_Acd[7:])]
+filtered_df_stacked_ing_acd = df_stacked_ing_acd[df_stacked_ing_acd['Recipe'].str.startswith(highest_impact_recipe_acd[7:])]
 
 #Removing the impact categories not needed for this chart
-filtered_df_stacked_ing_Acd = filtered_df_stacked_ing_Acd.drop(columns = ['Recipe', 'GHG LUC', 
+filtered_df_stacked_ing_acd = filtered_df_stacked_ing_acd.drop(columns = ['Recipe', 'GHG LUC', 
                                                         'GHG Feed',
                                                         'GHG Farm',
                                                         'GHG Processing',
@@ -462,13 +483,13 @@ filtered_df_stacked_ing_Acd = filtered_df_stacked_ing_Acd.drop(columns = ['Recip
                                                         'Freshwater Withdrawals (FW)',
                                                         'Scarcity-Weighted FW'])
 
-filtered_df_stacked_ing_Acd.set_index('Ingredient', inplace=True)
+filtered_df_stacked_ing_acd.set_index('Ingredient', inplace=True)
   
 # Transposing the DataFrame so the data follows the same format as before which is needed for a stacked bar chart
-df_stacked_transposed_Acd = filtered_df_stacked_ing_Acd.T
+df_stacked_transposed_acd = filtered_df_stacked_ing_acd.T
 
 # Plotting the stacked bar chart
-ax = df_stacked_transposed_Acd.plot(kind='bar', stacked=True, figsize=(12, 8))
+ax = df_stacked_transposed_acd.plot(kind='bar', stacked=True, figsize=(12, 8), color=custom_colors[:len(df_stacked_transposed_acd.columns)])
 
 # Set background color to white
 ax.set_facecolor('white')
@@ -484,7 +505,7 @@ ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
-plt.title(f'Acidification by ingredient - {highest_impact_recipe_Acd}', y=1.05, fontweight='bold')
+plt.title(f'Acidification by ingredient - {highest_impact_recipe_acd}', y=1.05, fontweight='bold')
 plt.xlabel('Impact Category')
 plt.ylabel('kg SO2eq')
     
@@ -493,7 +514,7 @@ legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 legend.get_frame().set_facecolor('none')  # Remove filling color
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_Acd_{highest_impact_recipe_Acd}.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_Acd_{highest_impact_recipe_acd}.png'), bbox_inches='tight')
 
 # Showing the plot
 plt.show()
@@ -503,20 +524,20 @@ plt.show()
 #! Eutrophication
 
 #Reading the data
-df_stacked_Eut = data_recipe
+df_stacked_eut = data_recipe
 
 #Filtering to show only Eutrophication
-df_stacked_Eut = df_stacked_Eut[df_stacked_Eut['impacts_labels'].str.contains('Eutr')]
+df_stacked_eut = df_stacked_eut[df_stacked_eut['impacts_labels'].str.contains('Eutr')]
 
-df_stacked_Eut = pd.DataFrame(df_stacked_Eut)
+df_stacked_eut = pd.DataFrame(df_stacked_eut)
 
-print(df_stacked_Eut)
+print(df_stacked_eut)
 
 # Setting 'Impact labels' column as index
-df_stacked_Eut.set_index('impacts_labels', inplace=True)
+df_stacked_eut.set_index('impacts_labels', inplace=True)
 
 # Plotting the multiple bar chart
-ax = df_stacked_Eut.plot(kind='bar', figsize=(12, 8))
+ax = df_stacked_eut.plot(kind='bar', figsize=(12, 8))
 
 # Set background color to white
 ax.set_facecolor('white')
@@ -551,18 +572,25 @@ plt.show()
 #* Impact for the recipe with the highest impact per ingredient
 
 # Finding the recipe with the highest impact
-highest_impact_recipe_Eut = df_stacked_Eut.max().idxmax()
+highest_impact_recipe_eut = df_stacked_eut.max().idxmax()
 
-print(highest_impact_recipe_Eut)
+print(highest_impact_recipe_eut)
+
+custom_colors = [
+    '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+    '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf',
+    '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5',
+    '#c49c94', '#f7b6d2', '#c7c7c7', '#dbdb8d', '#9edae5'
+]
 
 #Reading the data
-df_stacked_ing_Eut = data_stacked_ing
+df_stacked_ing_eut = data_stacked_ing
 
 #Filtering the dataframe by the recipe with the highest impact
-filtered_df_stacked_ing_Eut = df_stacked_ing_Eut[df_stacked_ing_Eut['Recipe'].str.startswith(highest_impact_recipe_Eut[7:])]
+filtered_df_stacked_ing_eut = df_stacked_ing_eut[df_stacked_ing_eut['Recipe'].str.startswith(highest_impact_recipe_eut[7:])]
 
 #Removing the impact categories not needed for this chart
-filtered_df_stacked_ing_Eut = filtered_df_stacked_ing_Eut.drop(columns = ['Recipe', 'GHG LUC', 
+filtered_df_stacked_ing_eut = filtered_df_stacked_ing_eut.drop(columns = ['Recipe', 'GHG LUC', 
                                                         'GHG Feed',
                                                         'GHG Farm',
                                                         'GHG Processing',
@@ -574,13 +602,13 @@ filtered_df_stacked_ing_Eut = filtered_df_stacked_ing_Eut.drop(columns = ['Recip
                                                         'Freshwater Withdrawals (FW)',
                                                         'Scarcity-Weighted FW'])
 
-filtered_df_stacked_ing_Eut.set_index('Ingredient', inplace=True)
+filtered_df_stacked_ing_eut.set_index('Ingredient', inplace=True)
   
 # Transposing the DataFrame so the data follows the same format as before which is needed for a stacked bar chart
-df_stacked_transposed_Eut = filtered_df_stacked_ing_Eut.T
+df_stacked_transposed_eut = filtered_df_stacked_ing_eut.T
 
 # Plotting the stacked bar chart
-ax = df_stacked_transposed_Eut.plot(kind='bar', stacked=True, figsize=(12, 8))
+ax = df_stacked_transposed_eut.plot(kind='bar', stacked=True, figsize=(12, 8), color=custom_colors[:len(df_stacked_transposed_eut.columns)])
 
 # Set background color to white
 ax.set_facecolor('white')
@@ -596,7 +624,7 @@ ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
-plt.title(f'Eutrophication by ingredient - {highest_impact_recipe_Eut}', y=1.05, fontweight='bold')
+plt.title(f'Eutrophication by ingredient - {highest_impact_recipe_eut}', y=1.05, fontweight='bold')
 plt.xlabel('Impact Category')
 plt.ylabel('kg PO43-eq')
     
@@ -605,7 +633,7 @@ legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 legend.get_frame().set_facecolor('none')  # Remove filling color
     
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_Eut_{highest_impact_recipe_Eut}.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_Eut_{highest_impact_recipe_eut}.png'), bbox_inches='tight')
 
 # Showing the plot
 plt.show()
@@ -615,20 +643,20 @@ plt.show()
 #! Freshwater
 
 #Reading the data
-df_stacked_FW = data_recipe
+df_stacked_fw = data_recipe
 
 #Filtering to show only Freshwater
-df_stacked_FW = df_stacked_FW[df_stacked_FW['impacts_labels'].str.contains('Freshwater')]
+df_stacked_fw = df_stacked_fw[df_stacked_fw['impacts_labels'].str.contains('Freshwater')]
 
-df_stacked_FW = pd.DataFrame(df_stacked_FW)
+df_stacked_fw = pd.DataFrame(df_stacked_fw)
 
-print(df_stacked_FW)
+print(df_stacked_fw)
 
 # Setting 'Impacts_labels' column as index
-df_stacked_FW.set_index('impacts_labels', inplace=True)
+df_stacked_fw.set_index('impacts_labels', inplace=True)
 
 # Plotting the multiple bar chart
-ax = df_stacked_FW.plot(kind='bar', figsize=(12, 8))
+ax = df_stacked_fw.plot(kind='bar', figsize=(12, 8))
 
 # Set background color to white
 ax.set_facecolor('white')
@@ -663,18 +691,25 @@ plt.show()
 #* Impact for the recipe with the highest impact per ingredient
 
 # Finding the recipe with the highest impact
-highest_impact_recipe_FW = df_stacked_FW.max().idxmax()
+highest_impact_recipe_fw = df_stacked_fw.max().idxmax()
 
-print(highest_impact_recipe_FW)
+print(highest_impact_recipe_fw)
+
+custom_colors = [
+    '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+    '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf',
+    '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5',
+    '#c49c94', '#f7b6d2', '#c7c7c7', '#dbdb8d', '#9edae5'
+]
 
 #Reading the data
-df_stacked_ing_FW = data_stacked_ing
+df_stacked_ing_fw = data_stacked_ing
 
 #Filtering the dataframe by the recipe with the highest impact
-filtered_df_stacked_ing_FW = df_stacked_ing_FW[df_stacked_ing_FW['Recipe'].str.startswith(highest_impact_recipe_FW[7:])]
+filtered_df_stacked_ing_fw = df_stacked_ing_fw[df_stacked_ing_fw['Recipe'].str.startswith(highest_impact_recipe_fw[7:])]
 
 #Removing the impact categories not needed for this chart
-filtered_df_stacked_ing_FW = filtered_df_stacked_ing_FW.drop(columns = ['Recipe', 'GHG LUC', 
+filtered_df_stacked_ing_fw = filtered_df_stacked_ing_fw.drop(columns = ['Recipe', 'GHG LUC', 
                                                         'GHG Feed',
                                                         'GHG Farm',
                                                         'GHG Processing',
@@ -686,13 +721,13 @@ filtered_df_stacked_ing_FW = filtered_df_stacked_ing_FW.drop(columns = ['Recipe'
                                                         'Eutrophication',
                                                         'Scarcity-Weighted FW'])
 
-filtered_df_stacked_ing_FW.set_index('Ingredient', inplace=True)
+filtered_df_stacked_ing_fw.set_index('Ingredient', inplace=True)
   
 # Transposing the DataFrame so the data follows the same format as before which is needed for a stacked bar chart
-df_stacked_transposed_FW = filtered_df_stacked_ing_FW.T
+df_stacked_transposed_fw = filtered_df_stacked_ing_fw.T
 
 # Plotting the stacked bar chart
-ax = df_stacked_transposed_FW.plot(kind='bar', stacked=True, figsize=(12, 8))
+ax = df_stacked_transposed_fw.plot(kind='bar', stacked=True, figsize=(12, 8), color=custom_colors[:len(df_stacked_transposed_fw.columns)])
 
 # Set background color to white
 ax.set_facecolor('white')
@@ -708,7 +743,7 @@ ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
  
 # Adding labels and title
-plt.title(f'Freshwater by ingredient - {highest_impact_recipe_FW}', y=1.05, fontweight='bold')
+plt.title(f'Freshwater by ingredient - {highest_impact_recipe_fw}', y=1.05, fontweight='bold')
 plt.xlabel('Impact Category')
 plt.ylabel('Liters')
     
@@ -717,7 +752,7 @@ legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 legend.get_frame().set_facecolor('none')  # Remove filling color
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_FW_{highest_impact_recipe_FW}.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_FW_{highest_impact_recipe_fw}.png'), bbox_inches='tight')
 
 # Showing the plot
 plt.show()
@@ -728,20 +763,20 @@ plt.show()
 #! Str-Wt WU
 
 #Reading the data
-df_stacked_Str = data_recipe
+df_stacked_str = data_recipe
 
 #Filtering to show only Str-Wt WU
-df_stacked_Str = df_stacked_Str[df_stacked_Str['impacts_labels'].str.contains('Scarcity-Weighted')]
+df_stacked_str = df_stacked_str[df_stacked_str['impacts_labels'].str.contains('Scarcity-Weighted')]
 
-df_stacked_Str = pd.DataFrame(df_stacked_Str)
+df_stacked_str = pd.DataFrame(df_stacked_str)
 
-print(df_stacked_Str)
+print(df_stacked_str)
 
 # Setting 'Impact_labels' column as index
-df_stacked_Str.set_index('impacts_labels', inplace=True)
+df_stacked_str.set_index('impacts_labels', inplace=True)
 
 # Plotting the multiple bar chart
-ax = df_stacked_Str.plot(kind='bar', figsize=(12, 8))
+ax = df_stacked_str.plot(kind='bar', figsize=(12, 8))
 
 # Set background color to white
 ax.set_facecolor('white')
@@ -775,18 +810,25 @@ plt.show()
 #* Impact for the recipe with the highest impact per ingredient
 
 # Finding the recipe with the highest impact
-highest_impact_recipe_Str = df_stacked_Str.max().idxmax()
+highest_impact_recipe_str = df_stacked_str.max().idxmax()
 
-print(highest_impact_recipe_Str)
+print(highest_impact_recipe_str)
+
+custom_colors = [
+    '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+    '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf',
+    '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5',
+    '#c49c94', '#f7b6d2', '#c7c7c7', '#dbdb8d', '#9edae5'
+]
 
 #Reading the data
-df_stacked_ing_Str = data_stacked_ing
+df_stacked_ing_str = data_stacked_ing
 
 #Filtering the dataframe by the recipe with the highest impact
-filtered_df_stacked_ing_Str = df_stacked_ing_Str[df_stacked_ing_Str['Recipe'].str.startswith(highest_impact_recipe_Str[7:])]
+filtered_df_stacked_ing_str = df_stacked_ing_str[df_stacked_ing_str['Recipe'].str.startswith(highest_impact_recipe_str[7:])]
 
 #Removing the impact categories not needed for this chart
-filtered_df_stacked_ing_Str = filtered_df_stacked_ing_Str.drop(columns = ['Recipe', 'GHG LUC', 
+filtered_df_stacked_ing_str = filtered_df_stacked_ing_str.drop(columns = ['Recipe', 'GHG LUC', 
                                                         'GHG Feed',
                                                         'GHG Farm',
                                                         'GHG Processing',
@@ -798,13 +840,13 @@ filtered_df_stacked_ing_Str = filtered_df_stacked_ing_Str.drop(columns = ['Recip
                                                         'Eutrophication',
                                                         'Freshwater Withdrawals (FW)'])
 
-filtered_df_stacked_ing_Str.set_index('Ingredient', inplace=True)
+filtered_df_stacked_ing_str.set_index('Ingredient', inplace=True)
   
 # Transposing the DataFrame so the data follows the same format as before which is needed for a stacked bar chart
-df_stacked_transposed_Str = filtered_df_stacked_ing_Str.T
+df_stacked_transposed_str = filtered_df_stacked_ing_str.T
 
 # Plotting the stacked bar chart
-ax = df_stacked_transposed_Str.plot(kind='bar', stacked=True, figsize=(12, 8))
+ax = df_stacked_transposed_str.plot(kind='bar', stacked=True, figsize=(12, 8), color=custom_colors[:len(df_stacked_transposed_str.columns)])
 
 # Set background color to white
 ax.set_facecolor('white')
@@ -820,7 +862,7 @@ ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
-plt.title(f'Scarcity-Weighted FW by ingredient - {highest_impact_recipe_Str}', y=1.05, fontweight='bold')
+plt.title(f'Scarcity-Weighted FW by ingredient - {highest_impact_recipe_str}', y=1.05, fontweight='bold')
 plt.xlabel('Impact Category')
 plt.ylabel('Liters eq')
     
@@ -829,7 +871,7 @@ legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
 legend.get_frame().set_facecolor('none')  # Remove filling color
 
 # Saving the plot
-plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_Str_{highest_impact_recipe_Str}.png'), bbox_inches='tight')
+plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_Str_{highest_impact_recipe_str}.png'), bbox_inches='tight')
 
 # Showing the plot
 plt.show()
