@@ -7,34 +7,38 @@ import project_functions as pfuncs
 from constants import data_path
 from constants import save_path_impacts
 
+#reading the impacts saved in the previous script
 data_recipe = pfuncs.dataset_reader('impacts_recipes.xlsx', 'interim', 
                              False)
 
 #%%
 #!SPIDER WEB CHART - Relative environmental performance of recipes
+#This chart sets as 100% the recipe with the highest impact per categoty and 
+#set the rest of the recipes relative to that impact in percentages.
 
 plt.style.use('ggplot')
 
-# Sample data (replace with your own data)
+# Reading the total impacts, instead of by the breakdown into life cycle
+#emissions and land use types
 data_test = pfuncs.dataset_reader('impacts_total.xlsx', 'interim', False)
 data_test = pd.DataFrame(data_test)
 
-# Extract category column
+# Extracting category column
 categories = data_test['impacts_labels']
 
-# Extract recipe columns dynamically
-recipe_columns = data_test.columns[1:]  # Exclude the 'Impacts_labels' column
+# Extracting recipe columns dynamically
+recipe_columns = data_test.columns[1:] 
 
-# Identify the recipe with the highest value for each category
+# Identifying the recipe with the highest value for each category
 highest_values = data_test[recipe_columns].max(axis=1)
 
-# Divide all values by the value of the highest recipe and optionally multiply by 100
+# Dividing all values by the value of the highest recipe and optionally multiply by 100
 scaled_values = data_test[recipe_columns].div(highest_values, axis=0) * 100
 
-# Concatenate the 'Impacts_labels' column with the scaled values DataFrame
+# Concatenating the 'Impacts_labels' column with the scaled values DataFrame
 scaled_data_with_labels = pd.concat([categories, scaled_values], axis=1)
 
-# Extract columns for the radar chart
+# Extracting columns for the radar chart
 impacts = scaled_data_with_labels['impacts_labels'].tolist()
 recipes_data = scaled_data_with_labels.drop(columns='impacts_labels')
 
@@ -43,39 +47,38 @@ print(scaled_data_with_labels)
 # Number of recipes
 num_recipes = scaled_values.shape[1]
 
-# Compute angles
+# Computating angles
 angles = np.linspace(0, 2*np.pi, len(impacts), endpoint=False)
 angles = np.concatenate((angles, [angles[0]]))
 
 # Drop the first impact label after concatenating it with the last one
 impacts.append(impacts[0])
 
-# Ensure the lengths of impacts and angles match
+# making sure that the lengths of impacts and angles match
 if len(impacts) != len(angles):
-    raise ValueError("The number of impacts labels does not match the number of angles.")
+    raise ValueError("Do not match")
 
-# Plot the radar chart
+# Plotting the radar chart
 fig = plt.figure(figsize=(6, 6))
 ax = fig.add_subplot(polar=True, facecolor='#f0f0f0')
 
 for i, recipe_name in enumerate(recipe_columns):
     values = scaled_data_with_labels.iloc[:, i+1].tolist()
-    values.append(values[0])  # Close the loop
-    ax.plot(angles, values, '--', label=recipe_name)  # Use recipe name as label
+    values.append(values[0]) 
+    ax.plot(angles, values, '--', label=recipe_name) 
     ax.fill(angles, values, alpha=0.1)
 
 ax.set_thetagrids(angles*180/np.pi, impacts)
 
 # Set the color and transparency of the grid lines
-ax.xaxis.grid(True, linestyle='-', linewidth=0.5, alpha=0.8, color='darkgrey')  # Adjust color to dark grey
+ax.xaxis.grid(True, linestyle='-', linewidth=0.5, alpha=0.8, color='darkgrey')
 
-# Adjust the z-order for the grid lines to be higher than the z-order of the subplot
-ax.xaxis.grid(zorder=2)  # Set zorder to 2
+# Adjusting the order for the grid lines to see the label of the axis
+ax.xaxis.grid(zorder=2) 
 
 plt.title(f'Relative environmental performance of recipes', y=1.05, fontweight='bold')
 
-# Set the z-order for the axis labels to be higher than the z-order of the grid lines
-ax.set_thetagrids(angles*180/np.pi, impacts, zorder=3)  # Set zorder to 3
+ax.set_thetagrids(angles*180/np.pi, impacts, zorder=3) 
 
 plt.grid(True)
 plt.tight_layout()
@@ -127,7 +130,7 @@ for recipe in df_stacked_ing['Recipe'].unique():
     # Plotting the stacked bar chart
     ax = df_percent_ing.plot(kind='bar', stacked=True, figsize=(12, 8), linewidth=1, color=custom_colors[:len(df_percent_ing.columns)])
     
-    # Set background color to white
+    # Setting background color to white
     ax.set_facecolor('white')
 
     # Adding labels and title
@@ -139,12 +142,12 @@ for recipe in df_stacked_ing['Recipe'].unique():
     ax.spines['bottom'].set_color('black')
     ax.spines['left'].set_color('black')
     
-    # Rotate x-axis labels by 45 degrees
+    # Rotating x-axis labels by 45 degrees
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right', fontsize=12)
 
     # Displaying the legend
     legend = plt.legend(title='Ingredients', loc='upper left', bbox_to_anchor=(1, 1), frameon=True, edgecolor='black', )
-    legend.get_frame().set_facecolor('none')  # Remove filling color
+    legend.get_frame().set_facecolor('none')
 
     # Saving the plot
     plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_100_recipes_ing_{recipe}.png'), bbox_inches='tight')
@@ -161,7 +164,7 @@ for recipe in df_stacked_ing['Recipe'].unique():
 #For each category, a break down into the ingredients of the recipe with
 # the highest impact is shown
 
-#! GHG
+#! GHG emissions
 
 # Reading the data
 df_stacked_ghg = data_recipe
@@ -179,7 +182,7 @@ df_stacked_ghg.set_index('impacts_labels', inplace=True)
 # Plotting the multiple bar chart
 ax = df_stacked_ghg.plot(kind='bar', figsize=(12, 8))
 
-# Set background color to white
+# Setting background color to white
 ax.set_facecolor('white')
 
 # Adding labels and title
@@ -191,17 +194,17 @@ plt.ylabel('GHG Emissions (Kg CO2 eq)')
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 45 degrees
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right', fontsize=12)  # Rotate labels and align them to the right
+# Rotating x-axis labels by 45 degrees
+ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right', fontsize=12) 
 
-# Set y-axis labels with increased font size
+# Setting y-axis labels with increased font size
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Displaying the legend
 legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1),  frameon=True, edgecolor='black',)
 legend.get_frame().set_facecolor('none')  # Remove filling color
 
-# Adjust the layout to make space for the title
+# Adjusting the layout to make space for the title
 plt.tight_layout()
 
 # Saving the plot
@@ -219,6 +222,8 @@ highest_impact_recipe_ghg = df_stacked_ghg.max().idxmax()
 
 print(highest_impact_recipe_ghg)
 
+#Setting up some custom colors since the charts were repeating the same 
+#color pallet after the fifth ingredient
 custom_colors = [
     '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
     '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf',
@@ -252,17 +257,17 @@ print(df_stacked_transposed_ghg)
 # Plotting the stacked bar chart
 ax = df_stacked_transposed_ghg.plot(kind='bar', stacked=True, figsize=(12, 8), color=custom_colors[:len(df_stacked_transposed_ghg.columns)])
 
-# Set background color to white
+# Setting background color to white
 ax.set_facecolor('white')
 
-# Set axis lines to black
+# Setting axis lines to black
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 45 degrees
-ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right', fontsize=12)  # Rotate labels and align them to the right
+# Rotating x-axis labels by 45 degrees
+ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right', fontsize=12) 
 
-# Set y-axis labels with increased font size
+# Setting y-axis labels with increased font size
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
@@ -272,9 +277,9 @@ plt.ylabel('kg CO2 eq')
     
 # Displaying the legend
 legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
-legend.get_frame().set_facecolor('none')  # Remove filling color
+legend.get_frame().set_facecolor('none') 
 
-# Adjust the layout to make space for the title
+# Adjusting the layout to make space for the title
 plt.tight_layout()
 
 # Saving the plot
@@ -302,17 +307,17 @@ df_stacked_lu.set_index('impacts_labels', inplace=True)
 # Plotting the multiple bar chart
 ax = df_stacked_lu.plot(kind='bar', figsize=(12, 8))
 
-# Set background color to white
+# Setting background color to white
 ax.set_facecolor('white')
 
-# Set axis lines to black
+# Setting axis lines to black
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 0 degrees
+# Rotating x-axis labels by 0 degrees
 ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)
 
-# Set y-axis labels with increased font size
+# Setting y-axis labels with increased font size
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
@@ -322,7 +327,7 @@ plt.ylabel('m2')
 
 # Displaying the legend
 legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1),  frameon=True, edgecolor='black',)
-legend.get_frame().set_facecolor('none')  # Remove filling color
+legend.get_frame().set_facecolor('none') 
 
 # Saving the plot
 plt.savefig(os.path.join(save_path_impacts, 'stacked_bar_recipes_LU.png'), bbox_inches='tight')
@@ -338,6 +343,9 @@ plt.show()
 highest_impact_recipe_lu = df_stacked_lu.max().idxmax()
 
 print(highest_impact_recipe_lu)
+
+#Setting up some custom colors since the charts were repeating the same 
+#color pallet after the fifth ingredient
 
 custom_colors = [
     '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
@@ -373,17 +381,17 @@ df_stacked_transposed_lu = filtered_df_stacked_ing_lu.T
 # Plotting the stacked bar chart
 ax = df_stacked_transposed_lu.plot(kind='bar', stacked=True, figsize=(12, 8), color=custom_colors[:len(df_stacked_transposed_lu.columns)])
 
-# Set background color to white
+# Setting background color to white
 ax.set_facecolor('white')
 
-# Set axis lines to black
+# Setting axis lines to black
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 0 degrees
+# Rotating x-axis labels by 0 degrees
 ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)
 
-# Set y-axis labels with increased font size
+# Setting y-axis labels with increased font size
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
@@ -393,7 +401,7 @@ plt.ylabel('m2')
     
 # Displaying the legend
 legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
-legend.get_frame().set_facecolor('none')  # Remove filling color
+legend.get_frame().set_facecolor('none') 
 
 # Saving the plot
 plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_LU_{highest_impact_recipe_lu}.png'), bbox_inches='tight')
@@ -420,17 +428,17 @@ df_stacked_acd.set_index('impacts_labels', inplace=True)
 # Plotting the multiple bar chart
 ax = df_stacked_acd.plot(kind='bar', figsize=(12, 8))
 
-# Set background color to white
+# Setting background color to white
 ax.set_facecolor('white')
 
-# Set axis lines to black
+# Setting axis lines to black
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 0 degrees
+# Rotating x-axis labels by 0 degrees
 ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)
 
-# Set y-axis labels with increased font size
+# Setting y-axis labels with increased font size
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
@@ -440,7 +448,7 @@ plt.ylabel('kg SO2eq')
 
 # Displaying the legend
 legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
-legend.get_frame().set_facecolor('none')  # Remove filling color
+legend.get_frame().set_facecolor('none')
 
 # Saving the plot
 plt.savefig(os.path.join(save_path_impacts, 'stacked_bar_recipes_Acd.png'), bbox_inches='tight')
@@ -456,6 +464,9 @@ plt.show()
 highest_impact_recipe_acd = df_stacked_acd.max().idxmax()
 
 print(highest_impact_recipe_acd)
+
+#Setting up some custom colors since the charts were repeating the same 
+#color pallet after the fifth ingredient
 
 custom_colors = [
     '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
@@ -491,17 +502,17 @@ df_stacked_transposed_acd = filtered_df_stacked_ing_acd.T
 # Plotting the stacked bar chart
 ax = df_stacked_transposed_acd.plot(kind='bar', stacked=True, figsize=(12, 8), color=custom_colors[:len(df_stacked_transposed_acd.columns)])
 
-# Set background color to white
+# Setting background color to white
 ax.set_facecolor('white')
 
-# Set axis lines to black
+# Setting axis lines to black
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 0 degrees
+# Rotating x-axis labels by 0 degrees
 ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)  
 
-# Set y-axis labels with increased font size
+# Setting y-axis labels with increased font size
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
@@ -511,7 +522,7 @@ plt.ylabel('kg SO2eq')
     
 # Displaying the legend
 legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
-legend.get_frame().set_facecolor('none')  # Remove filling color
+legend.get_frame().set_facecolor('none')
 
 # Saving the plot
 plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_Acd_{highest_impact_recipe_acd}.png'), bbox_inches='tight')
@@ -539,17 +550,17 @@ df_stacked_eut.set_index('impacts_labels', inplace=True)
 # Plotting the multiple bar chart
 ax = df_stacked_eut.plot(kind='bar', figsize=(12, 8))
 
-# Set background color to white
+# Setting background color to white
 ax.set_facecolor('white')
 
-# Set axis lines to black
+# Setting axis lines to black
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 0 degrees
+# Rotating x-axis labels by 0 degrees
 ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)  
 
-# Set y-axis labels with increased font size
+# Setting y-axis labels with increased font size
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
@@ -559,7 +570,7 @@ plt.ylabel('kg PO43-eq')
 
 # Displaying the legend
 legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
-legend.get_frame().set_facecolor('none')  # Remove filling color
+legend.get_frame().set_facecolor('none')
 
 # Saving the plot
 plt.savefig(os.path.join(save_path_impacts, 'stacked_bar_recipes_Eut.png'), bbox_inches='tight')
@@ -610,17 +621,17 @@ df_stacked_transposed_eut = filtered_df_stacked_ing_eut.T
 # Plotting the stacked bar chart
 ax = df_stacked_transposed_eut.plot(kind='bar', stacked=True, figsize=(12, 8), color=custom_colors[:len(df_stacked_transposed_eut.columns)])
 
-# Set background color to white
+# Setting background color to white
 ax.set_facecolor('white')
 
-# Set axis lines to black
+# Setting axis lines to black
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
 # Rotate x-axis labels by 0 degrees
 ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)  
 
-# Set y-axis labels with increased font size
+# Setting y-axis labels with increased font size
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
@@ -630,7 +641,7 @@ plt.ylabel('kg PO43-eq')
     
 # Displaying the legend
 legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
-legend.get_frame().set_facecolor('none')  # Remove filling color
+legend.get_frame().set_facecolor('none')
     
 # Saving the plot
 plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_Eut_{highest_impact_recipe_eut}.png'), bbox_inches='tight')
@@ -658,17 +669,17 @@ df_stacked_fw.set_index('impacts_labels', inplace=True)
 # Plotting the multiple bar chart
 ax = df_stacked_fw.plot(kind='bar', figsize=(12, 8))
 
-# Set background color to white
+# Setting background color to white
 ax.set_facecolor('white')
 
-# Set axis lines to black
+# Setting axis lines to black
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
 # Rotate x-axis labels by 0 degrees
 ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12) 
 
-# Set y-axis labels with increased font size
+# Setting y-axis labels with increased font size
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
@@ -678,7 +689,7 @@ plt.ylabel('Liters')
 
 # Displaying the legend
 legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
-legend.get_frame().set_facecolor('none')  # Remove filling color
+legend.get_frame().set_facecolor('none') 
 
 # Saving the plot
 plt.savefig(os.path.join(save_path_impacts, 'stacked_bar_recipes_FW.png'), bbox_inches='tight')
@@ -694,6 +705,9 @@ plt.show()
 highest_impact_recipe_fw = df_stacked_fw.max().idxmax()
 
 print(highest_impact_recipe_fw)
+
+#Setting up some custom colors since the charts were repeating the same 
+#color pallet after the fifth ingredient
 
 custom_colors = [
     '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
@@ -729,17 +743,17 @@ df_stacked_transposed_fw = filtered_df_stacked_ing_fw.T
 # Plotting the stacked bar chart
 ax = df_stacked_transposed_fw.plot(kind='bar', stacked=True, figsize=(12, 8), color=custom_colors[:len(df_stacked_transposed_fw.columns)])
 
-# Set background color to white
+# Setting background color to white
 ax.set_facecolor('white')
 
-# Set axis lines to black
+# Setting axis lines to black
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 0 degrees
+# Rotating x-axis labels by 0 degrees
 ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)
 
-# Set y-axis labels with increased font size
+# Setting y-axis labels with increased font size
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
  
 # Adding labels and title
@@ -749,7 +763,7 @@ plt.ylabel('Liters')
     
 # Displaying the legend
 legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
-legend.get_frame().set_facecolor('none')  # Remove filling color
+legend.get_frame().set_facecolor('none')
 
 # Saving the plot
 plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_FW_{highest_impact_recipe_fw}.png'), bbox_inches='tight')
@@ -760,7 +774,7 @@ plt.show()
 # %%
 
 
-#! Str-Wt WU
+#! Scarcity-weighted freshwater withdrawal
 
 #Reading the data
 df_stacked_str = data_recipe
@@ -778,17 +792,17 @@ df_stacked_str.set_index('impacts_labels', inplace=True)
 # Plotting the multiple bar chart
 ax = df_stacked_str.plot(kind='bar', figsize=(12, 8))
 
-# Set background color to white
+# Setting background color to white
 ax.set_facecolor('white')
 
-# Set axis lines to black
+# Setting axis lines to black
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 0 degrees
+# Rotating x-axis labels by 0 degrees
 ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12) 
 
-# Set y-axis labels with increased font size
+# Setting y-axis labels with increased font size
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
@@ -798,7 +812,7 @@ plt.ylabel('Liters eq')
 
 # Displaying the legend
 legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
-legend.get_frame().set_facecolor('none')  # Remove filling color
+legend.get_frame().set_facecolor('none')
 
 # Saving the plot
 plt.savefig(os.path.join(save_path_impacts, 'stacked_bar_recipes_Str.png'), bbox_inches='tight')
@@ -813,6 +827,9 @@ plt.show()
 highest_impact_recipe_str = df_stacked_str.max().idxmax()
 
 print(highest_impact_recipe_str)
+
+#Setting up some custom colors since the charts were repeating the same 
+#color pallet after the fifth ingredient
 
 custom_colors = [
     '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
@@ -848,17 +865,17 @@ df_stacked_transposed_str = filtered_df_stacked_ing_str.T
 # Plotting the stacked bar chart
 ax = df_stacked_transposed_str.plot(kind='bar', stacked=True, figsize=(12, 8), color=custom_colors[:len(df_stacked_transposed_str.columns)])
 
-# Set background color to white
+# Setting background color to white
 ax.set_facecolor('white')
 
-# Set axis lines to black
+# Seting axis lines to black
 ax.spines['bottom'].set_color('black')
 ax.spines['left'].set_color('black')
 
-# Rotate x-axis labels by 0 degrees
+# Rotating x-axis labels by 0 degrees
 ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)  
 
-# Set y-axis labels with increased font size
+# Setting y-axis labels with increased font size
 ax.set_yticklabels(ax.get_yticks(), fontsize=12)
 
 # Adding labels and title
@@ -868,7 +885,7 @@ plt.ylabel('Liters eq')
     
 # Displaying the legend
 legend = plt.legend(title='Recipe', loc='upper left', bbox_to_anchor=(1, 1))
-legend.get_frame().set_facecolor('none')  # Remove filling color
+legend.get_frame().set_facecolor('none')
 
 # Saving the plot
 plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_Str_{highest_impact_recipe_str}.png'), bbox_inches='tight')
@@ -877,89 +894,3 @@ plt.savefig(os.path.join(save_path_impacts, f'stacked_bar_Str_{highest_impact_re
 plt.show()
 
 #%%
-#! RESULTS FROM THE SURVEY
-
-from matplotlib.ticker import MaxNLocator
-
-data_survey = pfuncs.dataset_reader('results_survey.xlsx', 'interim', 
-                             False)
-
-
-df_survey = pd.DataFrame(data_survey)
-
-#Removing the impact categories not needed for this chart
-filtered_df_survey= df_survey.drop(columns = ['Marca temporal', 'Is there anything that you want to highlight from this prototype?', 
-                                                        'Are there any comments or suggestions that can help us improve the user experience and prototype?'])
-
-# Define the full range of Likert scale options
-likert_scale = [1, 2, 3, 4, 5]
-
-# Calculate the frequency of each response for each question
-response_counts = filtered_df_survey.apply(pd.Series.value_counts).reindex(likert_scale, fill_value=0)
-
-# Define colors to match the provided chart (adjust as needed based on the actual colors in the provided chart)
-colors = {
-    1: "#1f77b4",  # Blue
-    2: "#ff7f0e",  # Orange
-    3: "#2ca02c",  # Green
-    4: "#d62728",  # Red
-    5: "#9467bd"   # Purple
-}
-
-# Plot a bar chart for each question
-for question in filtered_df_survey.columns:
-    fig, ax = plt.subplots(figsize=(12, 8))
-    
-    # Plotting the bar chart with matching colors
-    bars = ax.bar(response_counts.index, response_counts[question], color=[colors[i] for i in response_counts.index], edgecolor='black')
-    
-    # Set background color to white
-    ax.set_facecolor('white')
-
-    # Set axis lines to black
-    ax.spines['bottom'].set_color('black')
-    ax.spines['left'].set_color('black')
-
-    # Rotate x-axis labels by 0 degrees
-    ax.set_xticks(likert_scale)
-    ax.set_xticklabels(likert_scale, rotation=0, ha='center', fontsize=12)
-
-    # Set y-axis labels with increased font size
-    ax.set_yticklabels(ax.get_yticks(), fontsize=12)
-
-    # Set y-axis to show only full numbers
-    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
-
-    # Adding labels and title
-    plt.title(f'{question}', y=1.05, fontweight='bold')
-    plt.xlabel('Likert Scale')
-    plt.ylabel('Frequency')
-
-    # Showing the plot
-    plt.show()
-
-
-
-# %%
-import pkg_resources
-
-# List of libraries to check
-libraries = [
-    'pandas',
-    'pathlib',
-    'os',
-    'numpy',
-    'matplotlib'
-]
-
-# Function to check library versions
-def check_versions(libraries):
-    for lib in libraries:
-        try:
-            version = pkg_resources.get_distribution(lib).version
-            print(f"{lib}: {version}")
-        except pkg_resources.DistributionNotFound:
-            print(f"{lib} is not installed")
-
-check_versions(libraries)
-# %%

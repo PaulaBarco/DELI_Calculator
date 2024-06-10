@@ -2,13 +2,12 @@
 
 
 #%%
+import os
 from pathlib import Path
 
-data_path = Path("../data")
-
-recipe_directory = Path("../data/recipes")
-
-save_path_impacts = Path("../data/impacts")
-
+data_path = Path('path/to/data')
+recipe_directory = data_path / 'recipes'
+save_path_impacts = data_path / 'impacts'
+recipe_sensitivity = data_path / 'sensitivity'
 
 # %%

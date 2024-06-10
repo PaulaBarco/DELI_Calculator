@@ -13,8 +13,7 @@ from pathlib import Path
 import project_functions as pfuncs
 from constants import data_path
 
-#os.getcwd()
-#directory_path = Path("..")
+
 save_path = (
     data_path
     / "interim"
@@ -31,7 +30,7 @@ df2 = df1.iloc[1:56, 0:16]
 print(df2)
 
 # ** CLEANING DATASET
-# Change the name of some columns
+# Changing the name of some columns
 df3 = (
     df2.rename(columns={'Unnamed: 0':'Food group', 'Unnamed: 1': 'Food and Waste', 'Impact / kg Food Balance Sheet functional unit (ex. waste)': 'Land Use (m2) Arable',
                                   'Unnamed: 3': 'Land Use (m2) Fallow',
@@ -65,7 +64,7 @@ print (df5)
 print(df5['Acid.(kg SO2eq)'].loc[df5.index[10]])
 
 
-# Save the database created
+# Saving the database created
 df5.to_excel(save_path / 'clean_poore_and_nemecek.xls', index=False)
 
 # %%

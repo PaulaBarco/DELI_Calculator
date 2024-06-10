@@ -18,15 +18,15 @@ from constants import recipe_directory
 from constants import save_path_impacts
 
 
-#Read the Clean Poore & Nemecek database
+#Reading the Clean Poore & Nemecek database
 fooditem_poore_and_nemecek = pfuncs.dataset_reader('food_item_poore_and_nemecek.xlsx', 'interim', 
                              False)
 
-#Read the conversion factors for cups, tbsp, tsp, etc.
+#Reading the conversion factors for cups, tbsp, tsp, etc.
 conversion_factors = pfuncs.dataset_reader('conversion_factors.xlsx', 'interim', 
                              False)
 
-# Counter to keep track of the file suffix
+# Countering to keep track of the file suffix for reading the excel files
 file_suffix_recipe = 1
 
 file_suffix_ingredient = 1
@@ -34,7 +34,7 @@ file_suffix_ingredient = 1
 # Loop through each Excel file in the folder Recipes
 for file_name in os.listdir(recipe_directory):
     if file_name.endswith('.xlsx'):
-        # Read all the Recipe_Template 
+        # Reading all the Recipe_template 
         file_path = os.path.join(recipe_directory, file_name)
         
         recipe_data = pd.read_excel(file_path)
@@ -47,7 +47,7 @@ for file_name in os.listdir(recipe_directory):
 
         #! Convert_all_to_grams
 
-                # Selected the rows that has different values than grams, so the conversion can be performed
+                # Selecting the rows that has different values than grams, so the conversion can be performed
         non_grams = abstracted_recipe[abstracted_recipe['Unit'] != 'grams']
 
         print(non_grams)
@@ -115,7 +115,7 @@ for file_name in os.listdir(recipe_directory):
         print(ingredients_impacts)
 
 
-        #Substract only the columns related to impacts
+        #Substracting only the columns related to impacts
         recipe_impacts = ingredients_impacts.loc[:,'Ingredient':'Str-Wt WU (L eq)'].reset_index(drop=True)
 
         print(recipe_impacts)
@@ -148,7 +148,7 @@ for file_name in os.listdir(recipe_directory):
 
         print(numeric_columns)
 
-        #Divide the columns by 1000
+        #Dividing the columns by 1000 to convert into kilograms
         recipe_impacts[numeric_columns] = recipe_impacts[numeric_columns].div(1000)
 
         print(recipe_impacts)
@@ -187,7 +187,7 @@ for file_name in os.listdir(recipe_directory):
                                                         'Freshwater (L)',
                                                         'Str-Wt WU (L eq)'])
 
-        #Change of names of the new columns
+        #Changing names of the new columns
         recipe_impacts_ing = (
             recipe_impacts_ing.rename(columns={'Land Use (m2) Arable_x':'Land Use Arable',
                                         'Land Use (m2) Fallow_x':'Land Use Fallow',
@@ -223,13 +223,13 @@ for file_name in os.listdir(recipe_directory):
 
         print(recipe_impacts)
 
-        # Add a Recipe column with the Recipe identifier
+        # Adding a Recipe column with the Recipe identifier
         recipe_impacts_ing['Recipe'] = f'{file_name[:-5]}'
         
-        # Save the results per ingredient to an Excel file
+        # Saving the results per ingredient to an Excel file
         recipe_impacts_ing.to_excel(save_path_impacts / f'{file_name[:-5]}_impacts_per_ingredient.xlsx', index=False)
         
-        # Increment the file suffix for the next iteration
+        # Incrementing the file suffix for the next iteration
         file_suffix_ingredient += 1
 
         #Summing up the impacts per category
@@ -237,12 +237,11 @@ for file_name in os.listdir(recipe_directory):
 
         print(recipe_impacts_total)
         
-        # Save the results to an Excel file
+        # Saving the results to an Excel file
         recipe_impacts_total.to_excel(save_path_impacts / f'Recipe {file_name[:-5]}.xlsx', index=False)
         
-        print(f"Environmental impacts saved to {save_path_impacts}")
 
-        # Increment the file suffix for the next iteration
+        # Incrementing the file suffix for the next iteration
         file_suffix_recipe += 1
         
 
@@ -271,39 +270,39 @@ labels_df = pd.DataFrame(row_labels)
 
 print(labels_df)
 
-#Save a file with the impact labels
+#Saving a file with the impact labels
 
 labels_df.to_excel(save_path_impacts / 'impacts_labels.xlsx', index=False)
 
 
-# List all the files that are in the Impact folder
+# Listing all the files that are in the ./impact folder
 excel_files = [file for file in os.listdir(save_path_impacts) if file.startswith('Recipe') and file.endswith('.xlsx')]
 
 print(excel_files)
-# Add the "labels.xlsx" file if it exists
+
 if 'impacts_labels.xlsx' in os.listdir(save_path_impacts):
     excel_files.append('impacts_labels.xlsx')
 
-# Create an empty DataFrame
+# Creating an empty DataFrame
 df_empty = pd.DataFrame()
 
 print(df_empty)
 
-# Iterate over each Excel file
+# Iterating over each Excel file
 for file in excel_files:
-    # Read the first column of the Excel file
+    # Reading the first column of the Excel file
     df_column = pd.read_excel(os.path.join(save_path_impacts, file), usecols=[0])
     
-    # Add the column to the empty DataFrame
+    # Adding the column to the empty DataFrame
     df_empty[file] = df_column.iloc[:, 0]  # Use iloc to ensure it's a Series, not DataFrame
     
 print(df_empty)
 
-#Remove the .xlsx from the recipe label in the columns
+#Removing the .xlsx from the recipe label in the columns
 
 df_empty.columns = df_empty.columns.str.replace('.xlsx', '')
 
-#Move the Impacts_labels column to the beginning of the database
+#Moving the Impacts_labels column to the beginning of the database
 col_ingredients = df_empty.pop('impacts_labels')
 df_empty.insert(0, 'impacts_labels', col_ingredients)
 
@@ -312,24 +311,24 @@ save_path_test = (
     data_path
     / "interim"
 )
-# Save the results to an Excel file
+# Saving the results to an Excel file
 df_empty.to_excel(save_path_test / 'impacts_recipes.xlsx', index=False)
         
-# List all Excel files in the directory that start with 'impact_ingredients'
+# Listing all Excel files in the directory that start with 'impact_ingredients'
 excel_files_ing = [file for file in os.listdir(save_path_impacts) if file.endswith('impacts_per_ingredient.xlsx')]
 
 print(excel_files_ing)
 
 
-# Create an empty DataFrame to store the concatenated DataFrames
+# Creating an empty DataFrame to store the concatenated DataFrames
 concatenated_impacts_ing = pd.DataFrame()
 
-# Iterate over the Excel files
+# Iterating over the Excel files
 for file in excel_files_ing:
-    # Load the Excel file into a DataFrame
+    # Loading the Excel file into a DataFrame
     df_ing = pd.read_excel(os.path.join(save_path_impacts, file))
     
-    # Concatenate the DataFrame with the existing concatenated DataFrame
+    # Concatenating the DataFrame with the existing concatenated DataFrame
     concatenated_impacts_ing = pd.concat([concatenated_impacts_ing, df_ing], ignore_index=True)
 
 print(concatenated_impacts_ing)
@@ -339,15 +338,18 @@ concatenated_impacts_ing.to_excel(save_path_test / 'impacts_per_ingredients.xlsx
 
 #! IMPACT CATEGORIES TOTALS
 
-#Read the Clean Poore & Nemecek database
+#Since the impacts for GHG emissions and land use are broken down into different
+#categroies, then we need to sum up those values to get the totals
+
+#Reading the Clean Poore & Nemecek database
 recipe_impacts_test = pfuncs.dataset_reader('impacts_recipes.xlsx', 'interim', 
                              False)
 
-# Find rows containing GHG emissions
+# Finding rows containing GHG emissions
 ghg_rows = recipe_impacts_test['impacts_labels'].str.contains('GHG')
 
 print(ghg_rows)
-# Sum rows with GHG emissions into one row
+# Summing rows with GHG emissions into one row
 recipe_impacts_test.loc['Total GHG Emissions'] = recipe_impacts_test.loc[ghg_rows].sum()
 
 print(recipe_impacts_test)
@@ -367,13 +369,13 @@ recipe_impacts_test = recipe_impacts_test.drop(index=rows_to_remove)
 
 print(recipe_impacts_test)
 
-# Reset index before summing Land Use rows
+# Reseting index before summing Land Use rows
 recipe_impacts_test.reset_index(inplace=True)
 
 lu_rows = recipe_impacts_test['impacts_labels'].str.contains('Land Use')
 
 
-# Sum rows with GHG emissions into one row
+# Summing rows with GHG emissions into one row
 recipe_impacts_test.loc['Total Land Use'] = recipe_impacts_test.loc[lu_rows].sum()
 
 
@@ -399,6 +401,6 @@ impacts_labels = [
 
 recipe_impacts_test.insert(0, 'impacts_labels', impacts_labels)
 
-
+#saving the file
 recipe_impacts_test.to_excel(save_path_test / 'impacts_total.xlsx', index=False)
 # %%
